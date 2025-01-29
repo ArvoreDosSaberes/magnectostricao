@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36" version="26.0.10">
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36" version="26.0.10" pages="2">
   <diagram name="Diagrama do Firmware" id="uduFi1Y2lIoiL3hH4ij0">
     <mxGraphModel dx="954" dy="583" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -59,6 +59,128 @@
           <mxGeometry x="0.1709" y="4" width="60" relative="1" as="geometry">
             <mxPoint x="577" y="310" as="sourcePoint" />
             <mxPoint x="580" y="370" as="targetPoint" />
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="nN804AK2bgpal58OEg2t" name="Página-2">
+    <mxGraphModel dx="1781" dy="1752" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="ZBh4jhGIyue95r1aHD40-1" value="Analisador de ruídos por Magnectostricção - Coletor de Audios&amp;nbsp;" style="shape=module;align=left;spacingLeft=20;align=center;verticalAlign=top;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="390" y="220" width="330" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="ZBh4jhGIyue95r1aHD40-2" value="Drone Terrestre" style="shape=module;align=left;spacingLeft=20;align=center;verticalAlign=top;whiteSpace=wrap;html=1;fillColor=#f8cecc;gradientColor=#ea6b66;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="620" y="430" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ZBh4jhGIyue95r1aHD40-3" value="controla&lt;br&gt;Atuadores e Sensores" style="html=1;verticalAlign=bottom;startArrow=oval;startFill=1;endArrow=block;startSize=8;curved=0;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=4;fillColor=#f8cecc;gradientColor=#ea6b66;strokeColor=#b85450;exitX=0.863;exitY=1.005;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" target="ZBh4jhGIyue95r1aHD40-2" source="ZBh4jhGIyue95r1aHD40-1">
+          <mxGeometry width="60" relative="1" as="geometry">
+            <mxPoint x="747" y="360" as="sourcePoint" />
+            <mxPoint x="620" y="360" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ZBh4jhGIyue95r1aHD40-4" value="" style="shape=providedRequiredInterface;html=1;verticalLabelPosition=bottom;sketch=0;" vertex="1" parent="1">
+          <mxGeometry x="310" y="320" width="50" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="ZBh4jhGIyue95r1aHD40-5" value="GPS" style="ellipse;shape=umlEntity;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="650" y="100" width="60" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="ZBh4jhGIyue95r1aHD40-6" value="USART" style="html=1;verticalAlign=bottom;startArrow=oval;startFill=1;endArrow=block;startSize=8;curved=0;rounded=0;strokeWidth=4;fillColor=#f8cecc;gradientColor=#ea6b66;strokeColor=#b85450;" edge="1" parent="1" source="ZBh4jhGIyue95r1aHD40-5" target="ZBh4jhGIyue95r1aHD40-1">
+          <mxGeometry x="0.1709" y="4" width="60" relative="1" as="geometry">
+            <mxPoint x="753" y="2.1316282072803006e-14" as="sourcePoint" />
+            <mxPoint x="600" y="107.9" as="targetPoint" />
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="zQSNwPWMR70maQdb3uC7-1" value="Microfone" style="endArrow=block;endFill=1;html=1;edgeStyle=orthogonalEdgeStyle;align=left;verticalAlign=top;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.024;entryY=0.886;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" target="ZBh4jhGIyue95r1aHD40-1">
+          <mxGeometry x="-1" relative="1" as="geometry">
+            <mxPoint x="360" y="345" as="sourcePoint" />
+            <mxPoint x="420" y="345" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="zQSNwPWMR70maQdb3uC7-2" value="1" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=bottom;" connectable="0" vertex="1" parent="zQSNwPWMR70maQdb3uC7-1">
+          <mxGeometry x="-1" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="zQSNwPWMR70maQdb3uC7-3" value="Cloud&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;strokeWidth=3;fillColor=#dae8fc;gradientColor=#7ea6e0;strokeColor=#6c8ebf;fontSize=20;" vertex="1" parent="1">
+          <mxGeometry x="540" y="-290" width="280" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="zQSNwPWMR70maQdb3uC7-4" value="Computador de Borda" style="label;whiteSpace=wrap;html=1;align=center;verticalAlign=bottom;spacingLeft=0;spacingBottom=4;imageAlign=center;imageVerticalAlign=top;image=img/clipart/Gear_128x128.png;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="80" y="-250" width="150" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="zQSNwPWMR70maQdb3uC7-6" value="" style="endArrow=block;startArrow=block;endFill=1;startFill=1;html=1;rounded=0;exitX=0.224;exitY=0.01;exitDx=0;exitDy=0;exitPerimeter=0;strokeWidth=4;fillColor=#ffcd28;gradientColor=#ffa500;strokeColor=#d79b00;" edge="1" parent="1" source="ZBh4jhGIyue95r1aHD40-1" target="zQSNwPWMR70maQdb3uC7-4">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="330" y="-60" as="sourcePoint" />
+            <mxPoint x="490" y="-60" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="zQSNwPWMR70maQdb3uC7-17" value="WiFi&lt;br&gt;802.11n" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="zQSNwPWMR70maQdb3uC7-6">
+          <mxGeometry x="0.3582" y="3" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="zQSNwPWMR70maQdb3uC7-7" value="Analisador de ruídos por Magnectostricção - Coletor de Audios&amp;nbsp;" style="shape=module;align=left;spacingLeft=20;align=center;verticalAlign=top;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="1">
+          <mxGeometry x="-90" y="200" width="330" height="150" as="geometry" />
+        </mxCell>
+        <mxCell id="zQSNwPWMR70maQdb3uC7-8" value="Drone Terrestre" style="shape=module;align=left;spacingLeft=20;align=center;verticalAlign=top;whiteSpace=wrap;html=1;fillColor=#f8cecc;gradientColor=#ea6b66;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="140" y="410" width="160" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="zQSNwPWMR70maQdb3uC7-9" value="controla&lt;br&gt;Atuadores e Sensores" style="html=1;verticalAlign=bottom;startArrow=oval;startFill=1;endArrow=block;startSize=8;curved=0;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=4;fillColor=#f8cecc;gradientColor=#ea6b66;strokeColor=#b85450;exitX=0.863;exitY=1.005;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="zQSNwPWMR70maQdb3uC7-7" target="zQSNwPWMR70maQdb3uC7-8">
+          <mxGeometry width="60" relative="1" as="geometry">
+            <mxPoint x="267" y="340" as="sourcePoint" />
+            <mxPoint x="140" y="340" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="zQSNwPWMR70maQdb3uC7-10" value="" style="shape=providedRequiredInterface;html=1;verticalLabelPosition=bottom;sketch=0;" vertex="1" parent="1">
+          <mxGeometry x="-170" y="300" width="50" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="zQSNwPWMR70maQdb3uC7-11" value="GPS" style="ellipse;shape=umlEntity;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="170" y="80" width="60" height="55" as="geometry" />
+        </mxCell>
+        <mxCell id="zQSNwPWMR70maQdb3uC7-12" value="USART" style="html=1;verticalAlign=bottom;startArrow=oval;startFill=1;endArrow=block;startSize=8;curved=0;rounded=0;strokeWidth=4;fillColor=#f8cecc;gradientColor=#ea6b66;strokeColor=#b85450;" edge="1" parent="1" source="zQSNwPWMR70maQdb3uC7-11" target="zQSNwPWMR70maQdb3uC7-7">
+          <mxGeometry x="0.1709" y="4" width="60" relative="1" as="geometry">
+            <mxPoint x="273" y="-19.99999999999998" as="sourcePoint" />
+            <mxPoint x="120" y="87.9" as="targetPoint" />
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="zQSNwPWMR70maQdb3uC7-13" value="Microfone" style="endArrow=block;endFill=1;html=1;edgeStyle=orthogonalEdgeStyle;align=left;verticalAlign=top;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.024;entryY=0.886;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" target="zQSNwPWMR70maQdb3uC7-7">
+          <mxGeometry x="-1" relative="1" as="geometry">
+            <mxPoint x="-120" y="325" as="sourcePoint" />
+            <mxPoint x="-60" y="325" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="zQSNwPWMR70maQdb3uC7-14" value="1" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=bottom;" connectable="0" vertex="1" parent="zQSNwPWMR70maQdb3uC7-13">
+          <mxGeometry x="-1" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="zQSNwPWMR70maQdb3uC7-15" value="" style="endArrow=block;startArrow=block;endFill=1;startFill=1;html=1;rounded=0;strokeWidth=4;fillColor=#ffcd28;gradientColor=#ffa500;strokeColor=#d79b00;" edge="1" parent="1" source="zQSNwPWMR70maQdb3uC7-7" target="zQSNwPWMR70maQdb3uC7-4">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="474" y="232" as="sourcePoint" />
+            <mxPoint x="208" y="-150" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="zQSNwPWMR70maQdb3uC7-16" value="WIFi&lt;br&gt;802.11n" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="zQSNwPWMR70maQdb3uC7-15">
+          <mxGeometry x="0.2553" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="zQSNwPWMR70maQdb3uC7-18" value="name" style="endArrow=block;endFill=1;html=1;edgeStyle=orthogonalEdgeStyle;align=left;verticalAlign=top;rounded=0;entryX=0.429;entryY=0.6;entryDx=0;entryDy=0;entryPerimeter=0;strokeWidth=4;fillColor=#e6d0de;gradientColor=#d5739d;strokeColor=#996185;" edge="1" parent="1" source="zQSNwPWMR70maQdb3uC7-4" target="zQSNwPWMR70maQdb3uC7-3">
+          <mxGeometry x="-1" relative="1" as="geometry">
+            <mxPoint x="330" as="sourcePoint" />
+            <mxPoint x="490" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="500" y="-200" />
+              <mxPoint x="500" y="-170" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="zQSNwPWMR70maQdb3uC7-19" value="1" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=bottom;" connectable="0" vertex="1" parent="zQSNwPWMR70maQdb3uC7-18">
+          <mxGeometry x="-1" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="zQSNwPWMR70maQdb3uC7-20" value="Internet" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=24;" vertex="1" connectable="0" parent="zQSNwPWMR70maQdb3uC7-18">
+          <mxGeometry x="0.0562" relative="1" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
