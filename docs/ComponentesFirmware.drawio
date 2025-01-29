@@ -1,5 +1,5 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36" version="26.0.10">
-  <diagram name="Página-1" id="uduFi1Y2lIoiL3hH4ij0">
+  <diagram name="Diagrama do Firmware" id="uduFi1Y2lIoiL3hH4ij0">
     <mxGraphModel dx="954" dy="583" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
@@ -28,7 +28,7 @@
         <mxCell id="l0LYsXaN3frjXtNEiOLv-8" value="WebServer" style="verticalAlign=top;align=left;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;whiteSpace=wrap;fillColor=#cdeb8b;strokeColor=#36393d;" vertex="1" parent="1">
           <mxGeometry x="240" y="160" width="370" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="l0LYsXaN3frjXtNEiOLv-9" value="Block" style="verticalAlign=top;align=left;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;whiteSpace=wrap;" vertex="1" parent="1">
+        <mxCell id="l0LYsXaN3frjXtNEiOLv-9" value="WI-FI 802-11n" style="verticalAlign=top;align=left;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;whiteSpace=wrap;" vertex="1" parent="1">
           <mxGeometry x="240" y="130" width="370" height="40" as="geometry" />
         </mxCell>
         <mxCell id="l0LYsXaN3frjXtNEiOLv-10" value="Drone Terrestre" style="shape=module;align=left;spacingLeft=20;align=center;verticalAlign=top;whiteSpace=wrap;html=1;fillColor=#f8cecc;gradientColor=#ea6b66;strokeColor=#b85450;" vertex="1" parent="1">
