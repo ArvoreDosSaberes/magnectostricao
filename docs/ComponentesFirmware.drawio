@@ -4,8 +4,53 @@
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="rPAikwQHVRFomooc7S73-1" value="Module" style="shape=module;align=left;spacingLeft=20;align=center;verticalAlign=top;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="210" y="120" width="410" height="130" as="geometry" />
+        <mxCell id="rPAikwQHVRFomooc7S73-1" value="Analisador de ruídos por Magnectostricção - Coletor de Audios&amp;nbsp;" style="shape=module;align=left;spacingLeft=20;align=center;verticalAlign=top;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
+          <mxGeometry x="210" y="100" width="410" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="l0LYsXaN3frjXtNEiOLv-4" value="Coletor GPS" style="verticalAlign=top;align=left;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;whiteSpace=wrap;fillColor=#cce5ff;strokeColor=#36393d;" vertex="1" parent="1">
+          <mxGeometry x="480" y="190" width="56" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="l0LYsXaN3frjXtNEiOLv-5" value="Controlador do Drone Terrestre" style="verticalAlign=top;align=left;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;whiteSpace=wrap;fillColor=#b0e3e6;strokeColor=#0e8088;" vertex="1" parent="1">
+          <mxGeometry x="520" y="190" width="90" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="l0LYsXaN3frjXtNEiOLv-7" value="" style="group" vertex="1" connectable="0" parent="1">
+          <mxGeometry x="240" y="190" width="190" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="l0LYsXaN3frjXtNEiOLv-1" value="ADC coletor de audio por DMA" style="verticalAlign=top;align=left;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;whiteSpace=wrap;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="l0LYsXaN3frjXtNEiOLv-7">
+          <mxGeometry y="70" width="190" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="l0LYsXaN3frjXtNEiOLv-2" value="Remoção de Ruídos" style="verticalAlign=top;align=left;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;whiteSpace=wrap;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="l0LYsXaN3frjXtNEiOLv-7">
+          <mxGeometry y="40" width="190" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="l0LYsXaN3frjXtNEiOLv-3" value="tinyML para classificação dos áudios" style="verticalAlign=top;align=left;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;whiteSpace=wrap;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;" vertex="1" parent="l0LYsXaN3frjXtNEiOLv-7">
+          <mxGeometry width="190" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="l0LYsXaN3frjXtNEiOLv-8" value="WebServer" style="verticalAlign=top;align=left;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;whiteSpace=wrap;fillColor=#cdeb8b;strokeColor=#36393d;" vertex="1" parent="1">
+          <mxGeometry x="240" y="160" width="370" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="l0LYsXaN3frjXtNEiOLv-9" value="Block" style="verticalAlign=top;align=left;spacingTop=8;spacingLeft=2;spacingRight=12;shape=cube;size=10;direction=south;fontStyle=4;html=1;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="240" y="130" width="370" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="l0LYsXaN3frjXtNEiOLv-10" value="Drone Terrestre" style="shape=module;align=left;spacingLeft=20;align=center;verticalAlign=top;whiteSpace=wrap;html=1;fillColor=#f8cecc;gradientColor=#ea6b66;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="470" y="360" width="150" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="l0LYsXaN3frjXtNEiOLv-11" value="controla" style="html=1;verticalAlign=bottom;startArrow=oval;startFill=1;endArrow=block;startSize=8;curved=0;rounded=0;entryX=0.653;entryY=0.06;entryDx=0;entryDy=0;entryPerimeter=0;strokeWidth=4;fillColor=#f8cecc;gradientColor=#ea6b66;strokeColor=#b85450;" edge="1" parent="1" source="l0LYsXaN3frjXtNEiOLv-5" target="l0LYsXaN3frjXtNEiOLv-10">
+          <mxGeometry width="60" relative="1" as="geometry">
+            <mxPoint x="380" y="300" as="sourcePoint" />
+            <mxPoint x="440" y="300" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l0LYsXaN3frjXtNEiOLv-12" value="" style="shape=providedRequiredInterface;html=1;verticalLabelPosition=bottom;sketch=0;" vertex="1" parent="1">
+          <mxGeometry x="130" y="260" width="50" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="l0LYsXaN3frjXtNEiOLv-13" value="Microfone" style="endArrow=block;endFill=1;html=1;edgeStyle=orthogonalEdgeStyle;align=left;verticalAlign=top;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0;entryDx=25;entryDy=190;entryPerimeter=0;" edge="1" parent="1" source="l0LYsXaN3frjXtNEiOLv-12" target="l0LYsXaN3frjXtNEiOLv-1">
+          <mxGeometry x="-1" relative="1" as="geometry">
+            <mxPoint x="330" y="300" as="sourcePoint" />
+            <mxPoint x="490" y="300" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="l0LYsXaN3frjXtNEiOLv-14" value="1" style="edgeLabel;resizable=0;html=1;align=left;verticalAlign=bottom;" connectable="0" vertex="1" parent="l0LYsXaN3frjXtNEiOLv-13">
+          <mxGeometry x="-1" relative="1" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
