@@ -1,9 +1,9 @@
+#ifndef ssd1306_i2c_h
+#define ssd1306_i2c_h
+
 #include <stdlib.h>
 #include "pico/stdlib.h"
 #include "hardware/i2c.h"
-
-#ifndef ssd1306_inc_h
-#define ssd1306_inc_h
 
 #define ssd1306_height 64 // Define a altura do display (32 pixels)
 #define ssd1306_width 128 // Define a largura do display (128 pixels)
@@ -68,4 +68,4 @@ typedef struct {
   uint8_t port_buffer[2];
 } ssd1306_t;
 
-#endif
+#endif // ssd1306_i2c_h

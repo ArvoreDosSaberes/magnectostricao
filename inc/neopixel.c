@@ -1,16 +1,10 @@
-#ifndef __NEOPIXEL_INC
-#define __NEOPIXEL_INC
-
 #include <stdlib.h>
 #include "ws2818b.pio.h"
+#include "pico/time.h"
 
-// Definição de pixel GRB
-struct pixel_t {
-  uint8_t G, R, B; // Três valores de 8-bits compõem um pixel.
-};
-typedef struct pixel_t pixel_t;
-typedef pixel_t npLED_t; // Mudança de nome de "struct pixel_t" para "npLED_t" por clareza.
+#include "neopixel.h"
 
+#include "ws2818b.pio.h"
 
 // Declaração do buffer de pixels que formam a matriz.
 static npLED_t *leds;
@@ -79,5 +73,3 @@ void npWrite() {
   }
   sleep_us(100); // Espera 100us, sinal de RESET do datasheet.
 }
-
-#endif
