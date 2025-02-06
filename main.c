@@ -575,21 +575,66 @@ static void start_http_server(void)
   struct tcp_pcb *pcb = tcp_new();
   if (!pcb)
   {
-    printf("Erro ao criar PCB\n");
+    strcpy(text_line_oled[0], " INICIALIZANDO ");
+    strcpy(text_line_oled[1], "               ");
+    strcpy(text_line_oled[2], " Infraestrutra ");
+    strcpy(text_line_oled[3], "    de Rede    ");
+    strcpy(text_line_oled[4], "     Wi-FI     ");
+    strcpy(text_line_oled[5], "               ");
+    strcpy(text_line_oled[6], " Erro criando  ");;
+    strcpy(text_line_oled[7], "      PCB      ");
+
+    uint8_t y = 0;
+    for (uint i = 0; i < count_of(text_line_oled); i++)
+    {
+      ssd1306_draw_string(ssd, 5, y, text_line_oled[i]);
+      y += ssd1306_line_height;
+    }
+    render_on_display(ssd, &frame_area);
     return;
   }
 
   // Liga o servidor na porta 80
   if (tcp_bind(pcb, IP_ADDR_ANY, 80) != ERR_OK)
   {
-    printf("Erro ao ligar o servidor na porta 80\n");
+  strcpy(text_line_oled[0], " INICIALIZANDO ");
+    strcpy(text_line_oled[1], "               ");
+    strcpy(text_line_oled[2], " Infraestrutra ");
+    strcpy(text_line_oled[3], "    de Rede    ");
+    strcpy(text_line_oled[4], "     Wi-FI     ");
+    strcpy(text_line_oled[5], "               ");
+    strcpy(text_line_oled[6], " Erro conectar ");;
+    strcpy(text_line_oled[7], " serv. porta 80");
+
+    uint8_t y = 0;
+    for (uint i = 0; i < count_of(text_line_oled); i++)
+    {
+      ssd1306_draw_string(ssd, 5, y, text_line_oled[i]);
+      y += ssd1306_line_height;
+    }
+    render_on_display(ssd, &frame_area);
     return;
   }
 
   pcb = tcp_listen(pcb);                // Coloca o PCB em modo de escuta
   tcp_accept(pcb, connection_callback); // Associa o callback de conexão
 
-  printf("Servidor HTTP rodando na porta 80...\n");
+    strcpy(text_line_oled[0], " INICIALIZANDO ");
+    strcpy(text_line_oled[1], "               ");
+    strcpy(text_line_oled[2], " Infraestrutra ");
+    strcpy(text_line_oled[3], "    de Rede    ");
+    strcpy(text_line_oled[4], "     Wi-FI     ");
+    strcpy(text_line_oled[5], "               ");
+    strcpy(text_line_oled[6], " SERRVIDOR WEB ");;
+    strcpy(text_line_oled[7], "   CONECTADO   ");
+
+    uint8_t y = 0;
+    for (uint i = 0; i < count_of(text_line_oled); i++)
+    {
+      ssd1306_draw_string(ssd, 5, y, text_line_oled[i]);
+      y += ssd1306_line_height;
+    }
+    render_on_display(ssd, &frame_area);
 }
 
 // Estado dos botões (inicialmente sem mensagens)
