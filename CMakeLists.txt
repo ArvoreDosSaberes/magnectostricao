@@ -2,6 +2,7 @@
 
 cmake_minimum_required(VERSION 3.13)
 
+
 set(PROJECT_NAME magnectostriccao)
 
 set(CMAKE_C_STANDARD 11)
@@ -17,7 +18,7 @@ set(FREERTOS_HEAP "4" CACHE STRING "" FORCE)
 #Select the native compile PORT
 #set(FREERTOS_PORT "GCC_ARM_CM0" CACHE STRING "" FORCE)
 #set(FREERTOS_PORT "GCC_RP2040" CACHE STRING "" FORCE)
-set(FREERTOS_PORT "ThirdParty_GCC_RP2040" CACHE STRING "" FORCE)
+#set(FREERTOS_PORT "ThirdParty_GCC_RP2040" CACHE STRING "" FORCE)
 
 # Initialise pico_sdk from installed location
 # (note this can come from environment, CMake cache etc)
@@ -74,9 +75,17 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 
 include_directories(${INCLUDES})
 
+# Add the freertos_config for FreeRTOS-Kernel
+add_library(freertos_config INTERFACE)
+
+target_include_directories(freertos_config
+    INTERFACE
+    "./tasks"
+)
 include(${FREERTOS_KERNEL_PATH}/portable/ThirdParty/GCC/RP2040/FreeRTOS_Kernel_import.cmake)
 
 target_link_libraries(${PROJECT_NAME} 
+    FreeRTOS-Kernel
     FreeRTOS-Kernel-Heap4
     hardware_i2c
     hardware_adc
