@@ -28,9 +28,9 @@ if(WIN32)
 else()
     set(USERHOME $ENV{HOME})
 endif()
-set(sdkVersion 2.1.0)
-set(toolchainVersion 13_3_Rel1)
-set(picotoolVersion 2.1.0)
+set(sdkVersion 1.5.1)
+set(toolchainVersion 13_2_Rel1)
+set(picotoolVersion 2.0.0)
 set(picoVscode ${USERHOME}/.pico-sdk/cmake/pico-vscode.cmake)
 if (EXISTS ${picoVscode})
     include(${picoVscode})
@@ -73,70 +73,11 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 )
 
 include_directories(${INCLUDES})
-#include_directories(include)
 
-add_library(freertos_config INTERFACE)
-
-target_include_directories(freertos_config
-        INTERFACE
-        "tasks"
-) 
-
-# Adding the FreeRTOS-Kernel subdirectory
-add_subdirectory(${FREERTOS_KERNEL_PATH} freertos_kernel)
-add_subdirectory(${FREERTOS_KERNEL_PATH}/portable/ThirdParty/GCC/RP2040/)
-
-#include(FreeRTOS_Kernel_import.cmake)
 include(${FREERTOS_KERNEL_PATH}/portable/ThirdParty/GCC/RP2040/FreeRTOS_Kernel_import.cmake)
 
-if (DEFINED FREERTOS_SMP_EXAMPLE AND FREERTOS_SMP_EXAMPLE STREQUAL "1")
-    message(STATUS "Build FreeRTOS SMP example")
-    # Adding the following configurations to build SMP template port
-    add_compile_options( -DconfigNUMBER_OF_CORES=2 -DconfigUSE_PASSIVE_IDLE_HOOK=0 )
-endif()
-    
-########################################################################
-# Overall Compile Options
-# Note the compile option strategy is to error on everything and then
-# Per library opt-out of things that are warnings/errors.
-# This ensures that no matter what strategy for compilation you take, the
-# builds will still occur.
-#
-# Only tested with GNU and Clang.
-# Other options are https://cmake.org/cmake/help/latest/variable/CMAKE_LANG_COMPILER_ID.html#variable:CMAKE_%3CLANG%3E_COMPILER_ID
-# Naming of compilers translation map:
-#
-#   FreeRTOS    | CMake
-#   -------------------
-#   CCS         | ?TBD?
-#   GCC         | GNU, Clang, *Clang Others?
-#   IAR         | IAR
-#   Keil        | ARMCC
-#   MSVC        | MSVC # Note only for MinGW?
-#   Renesas     | ?TBD?
-
-target_compile_options(freertos_kernel PRIVATE
-    ### Gnu/Clang C Options
-    $<$<COMPILE_LANG_AND_ID:C,GNU>:-fdiagnostics-color=always>
-    $<$<COMPILE_LANG_AND_ID:C,Clang>:-fcolor-diagnostics>
-
-    $<$<COMPILE_LANG_AND_ID:C,Clang,GNU>:-Wall>
-    $<$<COMPILE_LANG_AND_ID:C,Clang,GNU>:-Wextra>
-    $<$<COMPILE_LANG_AND_ID:C,Clang,GNU>:-Wpedantic>
-    $<$<COMPILE_LANG_AND_ID:C,Clang,GNU>:-Werror>
-    $<$<COMPILE_LANG_AND_ID:C,Clang,GNU>:-Wconversion>
-    $<$<COMPILE_LANG_AND_ID:C,Clang>:-Weverything>
-
-    # Suppressions required to build clean with clang.
-    $<$<COMPILE_LANG_AND_ID:C,Clang>:-Wno-unused-macros>
-    $<$<COMPILE_LANG_AND_ID:C,Clang>:-Wno-padded>
-    $<$<COMPILE_LANG_AND_ID:C,Clang>:-Wno-missing-variable-declarations>
-    $<$<COMPILE_LANG_AND_ID:C,Clang>:-Wno-covered-switch-default>
-    $<$<COMPILE_LANG_AND_ID:C,Clang>:-Wno-cast-align> )
- 
 target_link_libraries(${PROJECT_NAME} 
-    freertos_kernel
-    freertos_config
+    FreeRTOS-Kernel-Heap4
     hardware_i2c
     hardware_adc
     hardware_dma
@@ -146,6 +87,10 @@ target_link_libraries(${PROJECT_NAME}
     hardware_clocks
     pico_cyw43_arch_lwip_threadsafe_background
     pico_stdlib 
+)
+target_compile_definitions(${PROJECT_NAME}  PRIVATE
+        mainRUN_FREE_RTOS_ON_CORE=1
+        PICO_STACK_SIZE=0x1000
 )
 
 pico_add_extra_outputs(${PROJECT_NAME})
