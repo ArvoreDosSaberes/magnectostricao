@@ -29,9 +29,9 @@ if(WIN32)
 else()
     set(USERHOME $ENV{HOME})
 endif()
-set(sdkVersion 1.5.1)
-set(toolchainVersion 13_2_Rel1)
-set(picotoolVersion 2.0.0)
+set(sdkVersion 2.1.0)
+set(toolchainVersion 13_3_Rel1)
+set(picotoolVersion 2.1.0)
 set(picoVscode ${USERHOME}/.pico-sdk/cmake/pico-vscode.cmake)
 if (EXISTS ${picoVscode})
     include(${picoVscode})
@@ -42,7 +42,7 @@ set(PICO_BOARD pico_w CACHE STRING "Board type")
 # Pull in Raspberry Pi Pico SDK (must be before project)
 include(pico_sdk_import.cmake)
 
-project(${PROJECT_NAME} C CXX ASM)
+project(magnectostriccao C CXX ASM)
 
 # Initialise the Raspberry Pi Pico SDK
 pico_sdk_init()
@@ -55,6 +55,7 @@ add_executable(${PROJECT_NAME} main.c
         tasks/freeRTOS_helpers.c
         tasks/task_drone_control.c
         tasks/task_adc_with_dma.c
+        tasks/task_display_oled.c
         tasks/task_tinyML.c 
 )
 
@@ -81,12 +82,36 @@ add_library(freertos_config INTERFACE)
 target_include_directories(freertos_config
     INTERFACE
     "./tasks"
+    ${FREERTOS_KERNEL_PATH}/include
 )
-include(${FREERTOS_KERNEL_PATH}/portable/ThirdParty/GCC/RP2040/FreeRTOS_Kernel_import.cmake)
 
-target_link_libraries(${PROJECT_NAME} 
+FILE(GLOB FreeRTOS_src ${FREERTOS_KERNEL_PATH}/*.c)
+FILE(GLOB FreeRTOS_portable_common_src ${FREERTOS_KERNEL_PATH}/portable/Common/*.c)
+
+add_library( FreeRTOS-Kernel STATIC
+	${FreeRTOS_src}
+    ${FreeRTOS_portable_common_src}
+	${FREERTOS_KERNEL_PATH}/portable/ThirdParty/GCC/RP2040/port.c
+	#${FREERTOS_KERNEL_PATH}/portable/ThirdParty/GCC/RP2040/portasm.c
+	${FREERTOS_KERNEL_PATH}/portable/MemMang/heap_4.c
+)
+
+target_link_libraries( FreeRTOS-Kernel PUBLIC 
+        pico_stdlib
+        hardware_exception
+        hardware_irq
+        hardware_base
+)
+target_include_directories( FreeRTOS-Kernel PUBLIC 
+        ${FREERTOS_KERNEL_PATH}/include
+		tasks/
+		${FREERTOS_KERNEL_PATH}/portable/ThirdParty/GCC/RP2040/include
+)
+
+target_link_libraries( ${PROJECT_NAME} 
     FreeRTOS-Kernel
-    FreeRTOS-Kernel-Heap4
+#    freertos_kernel
+    freertos_config 
     hardware_i2c
     hardware_adc
     hardware_dma
@@ -94,6 +119,8 @@ target_link_libraries(${PROJECT_NAME}
     hardware_timer
     hardware_watchdog
     hardware_clocks
+    hardware_exception
+    hardware_irq
     pico_cyw43_arch_lwip_threadsafe_background
     pico_stdlib 
 )
