@@ -11,6 +11,8 @@
 #include <timers.h>
 #include <semphr.h>
 
+#include "stdio.h"
+#include "string.h"
 #include "pico/stdlib.h"
 
 #include "task_display_oled.h"
@@ -18,26 +20,26 @@
 
 char text_line_oled[max_text_lines][max_text_columns];
 /**
- * @brief Tarefa para uso do TinyML
+ * @brief Tarefa para uso do Display OLED
  *
  * @details
- *  Classifica o audio captado pelo microfone usando o TinyML.
  *
- * @see task_adc_with_dma
  */
 void task_display_oled(void *pvParameters)
 {
+    //printf("Display OLED\n");
     /* Unused parameters. */
     (void)pvParameters;
 
-    strcpy(text_line_oled[0], "               ");
-    strcpy(text_line_oled[1], " Nivel do Sinal");
-    strcpy(text_line_oled[2], "               ");
-    strcpy(text_line_oled[4], "               ");
-    strcpy(text_line_oled[6], "               ");
-    strcpy(text_line_oled[7], "               ");
-
-
+    vTaskSuspendAll();
+    memcpy(text_line_oled[0], "               ", max_text_columns);
+    memcpy(text_line_oled[1], " Nivel do Sinal", max_text_columns);
+    memcpy(text_line_oled[2], "               ", max_text_columns);
+    memcpy(text_line_oled[4], "               ", max_text_columns);
+    memcpy(text_line_oled[6], "               ", max_text_columns);
+    memcpy(text_line_oled[7], "               ", max_text_columns);
+    xTaskResumeAll();
+        
     struct render_area frame_area = {
         start_column : 0,
         end_column : ssd1306_width - 1,
@@ -52,12 +54,20 @@ void task_display_oled(void *pvParameters)
     {
         // ssd1306_write_array(ssd, &frame_area, &text);
         uint8_t y = 0;
+        
+        vTaskSuspendAll();
+        printf(text_line_oled[1]);
+        printf("\n");
+        //printf("uxHighWaterMark: %d\n", uxTaskGetStackHighWaterMark( NULL ));
         for (uint i = 0; i < count_of(text_line_oled); i++)
         {
             ssd1306_draw_string(ssd, 5, y, text_line_oled[i]);
             y += ssd1306_line_height;
         }
+        
         render_on_display(ssd, &frame_area);
-        vTaskDelay(100/portTICK_PERIOD_MS); 
+        xTaskResumeAll();
+
+        vTaskDelay(500/portTICK_PERIOD_MS); 
     }
 }

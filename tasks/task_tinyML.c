@@ -31,6 +31,7 @@ void task_tinyML(void *pvParameters){
 
     while (1)    
     {
+        printf("Task TinyML\n");
         // implementa código que classifica as amostras captadas pelo microfone
         // esta task está atrelada a task_adc_with_dma, que deverá emitir 
         // um evento ou depositar num queue a leitura feita
