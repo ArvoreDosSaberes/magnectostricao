@@ -133,7 +133,8 @@ void start_display_oled(){
     "Task que mantem o display atualizado",
     configMINIMAL_STACK_SIZE,
     NULL,
-    tskIDLE_PRIORITY,
+//    tskIDLE_PRIORITY,
+    1,
     NULL
   );
 }
@@ -359,7 +360,8 @@ void start_ADC_with_DMA(){
   xTaskCreate(
     task_adc_with_dma, 
     "Task ADC com DMA", 
-    configMINIMAL_STACK_SIZE, 
+//    configMINIMAL_STACK_SIZE, 
+    1,
     NULL, 
     tskIDLE_PRIORITY, 
     NULL);
@@ -496,7 +498,8 @@ void start_gpio_and_drone_control(){
     "Task Drone Control",
     configMINIMAL_STACK_SIZE,
     NULL,
-    tskIDLE_PRIORITY,
+    //tskIDLE_PRIORITY,
+    1,
     NULL
   );
 }
@@ -569,7 +572,13 @@ bool start_network_infrastructure(){
 
   // Inicia o servidor HTTP
   start_http_server();
-  xTaskCreate(task_http_server, "Task HTTP Server", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
+  xTaskCreate(
+    task_http_server, 
+    "Task HTTP Server", 
+    configMINIMAL_STACK_SIZE, 
+    NULL, 
+    tskIDLE_PRIORITY, 
+    NULL);
 
   return true;
 }

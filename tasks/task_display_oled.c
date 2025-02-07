@@ -58,6 +58,6 @@ void task_display_oled(void *pvParameters)
             y += ssd1306_line_height;
         }
         render_on_display(ssd, &frame_area);
-        vTaskDelay(100); /* delay 100 ticks */
+        vTaskDelay(100/portTICK_PERIOD_MS); 
     }
 }

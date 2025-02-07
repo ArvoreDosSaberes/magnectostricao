@@ -159,6 +159,8 @@ void task_adc_with_dma(void *pvParameters)
     npWrite();
 
     sprintf(text_line_oled[5], "   %02.2f dB     ", db);
+
+    vTaskDelay(100 / portTICK_PERIOD_MS);
   }
 }
 

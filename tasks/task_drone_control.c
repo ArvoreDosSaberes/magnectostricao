@@ -31,6 +31,6 @@ void task_drone_control(void *pvParameters){
     {
         // implementar código que recebe os comandos do computador de borda via
         // servidor web
-        vTaskDelay( 100 ); /* delay 100 ticks */
+        vTaskDelay((500 / portTICK_PERIOD_MS)); /* delay 100 ticks */
     }
 }
