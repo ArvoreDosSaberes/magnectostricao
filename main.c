@@ -35,7 +35,7 @@
 #include "tasks/task_display_oled.h" // Carrega tarefas do display
 #include "tasks/task_drone_control.h" // Carrega tarefas do controle de drone
 #include "tasks/task_tinyML.h" // Carrega tarefas do TinyML
-
+#include "tasks/task_http_server.h" // Carrega tarefas do http server
 #include "main.h" // carrega cabeçalhos do main
 
 // buffer de texto para o display oled
@@ -103,14 +103,31 @@ int main()
 
   sleep_ms(INTER_SCREEN_DELAY);
 
+  start_display_oled();
+  
   strcpy(text_line_oled[0], "               ");
-  strcpy(text_line_oled[1], " Nivel do Sinal");
+  strcpy(text_line_oled[1], "Inicializando o");
   strcpy(text_line_oled[2], "               ");
+  strcpy(text_line_oled[3], "  escalonador  ");
   strcpy(text_line_oled[4], "               ");
-  strcpy(text_line_oled[6], "               ");
+  strcpy(text_line_oled[5], "      de       ");
+  strcpy(text_line_oled[6], "    rarefas    ");
   strcpy(text_line_oled[7], "               ");
 
-  
+  uint8_t y = 0;
+  for (uint i = 0; i < count_of(text_line_oled); i++)
+  {
+    ssd1306_draw_string(ssd, 5, y, text_line_oled[i]);
+    y += ssd1306_line_height;
+  }
+  render_on_display(ssd, &frame_area);
+
+  vTaskStartScheduler();
+
+  return 0;
+}
+
+void start_display_oled(){
   xTaskCreate(
     task_display_oled,
     "Task que mantem o display atualizado",
@@ -119,35 +136,7 @@ int main()
     tskIDLE_PRIORITY,
     NULL
   );
-  vTaskStartScheduler();
-
-  // o código abaixo deve reestruturado para sepearar a infra de rede do processador do VU
-  // 
-  int32_t last_time = time_us_32();
-  while (true)
-  {
-    // infra de rede
-    cyw43_arch_poll(); // Necessário para manter o Wi-Fi ativo
-
-    
-
-    if (time_us_32() - last_time > 10000)
-    {
-      last_time = time_us_32();
-
-      uint8_t y = 0;
-      for (uint i = 0; i < count_of(text_line_oled); i++)
-      {
-        ssd1306_draw_string(ssd, 5, y, text_line_oled[i]);
-        y += ssd1306_line_height;
-      }
-      render_on_display(ssd, &frame_area);
-    }
-  }
-
-  return 0;
 }
-
 /**
  * Mostra a tela de abertura do projeto.
  */
@@ -301,6 +290,12 @@ void show_intro(){
     y += ssd1306_line_height;
   }
   render_on_display(ssd, &frame_area);
+
+  sleep_ms(OLED_SCROOL_DELAY);
+
+  memset(ssd, 0, ssd1306_buffer_length);
+  render_on_display(ssd, &frame_area);
+
 }
 
 /**
@@ -532,8 +527,8 @@ bool start_network_infrastructure(){
   }
 
   cyw43_arch_enable_sta_mode();
-  if (cyw43_arch_wifi_connect_timeout_ms(WIFI_SSID, WIFI_PASSWORD, CYW43_AUTH_WPA2_AES_PSK, 10000) != 0)
-  {
+  uint8_t count = 0;
+  while(count < 3 && cyw43_arch_wifi_connect_timeout_ms(WIFI_SSID, WIFI_PASSWORD, CYW43_AUTH_WPA2_AES_PSK, 10000) != 0){
     strcpy(text_line_oled[0], "    ATENCAO    ");
     strcpy(text_line_oled[1], "    FALHA NA   ");
     strcpy(text_line_oled[2], "               ");
@@ -541,8 +536,7 @@ bool start_network_infrastructure(){
     strcpy(text_line_oled[4], "    de Rede    ");
     strcpy(text_line_oled[5], "     Wi-FI     ");
     strcpy(text_line_oled[6], " NAO CONECTADO ");
-    strcpy(text_line_oled[7], "               ");
-   
+    sprintf(text_line_oled[7], " Tentativa: %02d", ++count);
     uint8_t y = 0;
     for (uint i = 0; i < count_of(text_line_oled); i++)
     {
@@ -550,17 +544,20 @@ bool start_network_infrastructure(){
       y += ssd1306_line_height;
     }
     render_on_display(ssd, &frame_area);
-    return false;
+    sleep_ms(INTER_SCREEN_DELAY/(1.0/3));
   }
+    
+  if (count==3) return false;
+  
   // Read the ip address in a human readable way
   uint8_t *ip_address = (uint8_t *)&(cyw43_state.netif[0].ip_addr.addr);
   strcpy(text_line_oled[0], " INICIALIZANDO ");
   strcpy(text_line_oled[1], "               ");
-  strcpy(text_line_oled[2], "               ");
   strcpy(text_line_oled[3], " Infraestrutra ");
   strcpy(text_line_oled[4], "    de Rede    ");
   strcpy(text_line_oled[5], "     Wi-FI     ");
-  strcpy(text_line_oled[6], "               ");
+  strcpy(text_line_oled[6], "   CONECTADO   ");
+  strcpy(text_line_oled[2], "               ");
   sprintf(text_line_oled[7], "%03d.%03d.%03d.%03d", ip_address[0], ip_address[1], ip_address[2], ip_address[3]);
   uint8_t y = 0;
   for (uint i = 0; i < count_of(text_line_oled); i++)
@@ -572,6 +569,7 @@ bool start_network_infrastructure(){
 
   // Inicia o servidor HTTP
   start_http_server();
+  xTaskCreate(task_http_server, "Task HTTP Server", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, NULL);
 
   return true;
 }

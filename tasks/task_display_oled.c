@@ -30,6 +30,14 @@ void task_display_oled(void *pvParameters)
     /* Unused parameters. */
     (void)pvParameters;
 
+    strcpy(text_line_oled[0], "               ");
+    strcpy(text_line_oled[1], " Nivel do Sinal");
+    strcpy(text_line_oled[2], "               ");
+    strcpy(text_line_oled[4], "               ");
+    strcpy(text_line_oled[6], "               ");
+    strcpy(text_line_oled[7], "               ");
+
+
     struct render_area frame_area = {
         start_column : 0,
         end_column : ssd1306_width - 1,

@@ -56,7 +56,8 @@ add_executable(${PROJECT_NAME} main.c
         tasks/task_drone_control.c
         tasks/task_adc_with_dma.c
         tasks/task_display_oled.c
-        tasks/task_tinyML.c 
+        tasks/task_tinyML.c
+        tasks/task_http_server.c 
 )
 
 pico_set_program_name(${PROJECT_NAME} "magnectostriccao")
@@ -100,7 +101,7 @@ target_link_libraries( FreeRTOS-Kernel PUBLIC
         pico_stdlib
         hardware_exception
         hardware_irq
-        hardware_base
+        hardware_sync
 )
 target_include_directories( FreeRTOS-Kernel PUBLIC 
         ${FREERTOS_KERNEL_PATH}/include

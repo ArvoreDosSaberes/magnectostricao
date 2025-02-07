@@ -88,6 +88,7 @@ static void start_gpio_and_drone_control();
 static bool start_network_infrastructure();
 static void start_bottons_control();
 static void start_VU_LED();
+static void start_display_oled();
 static void start_ADC_with_DMA();
 static void start_tinyML();
 
