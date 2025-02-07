@@ -16,6 +16,7 @@
 #include "task_display_oled.h"
 #include "inc/ssd1306.h"
 
+char text_line_oled[max_text_lines][max_text_columns];
 /**
  * @brief Tarefa para uso do TinyML
  *
