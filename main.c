@@ -32,13 +32,14 @@
 #include "inc/magnectostriccao.h" // Carrega parametros gerais do sistema
 
 #include "tasks/task_adc_with_dma.h" // carrega tarefas do ADC
+#include "tasks/task_display_oled.h" // Carrega tarefas do display
 #include "tasks/task_drone_control.h" // Carrega tarefas do controle de drone
 #include "tasks/task_tinyML.h" // Carrega tarefas do TinyML
 
 #include "main.h" // carrega cabeçalhos do main
 
 // buffer de texto para o display oled
-char text_line_oled[max_text_lines][max_text_columns];
+extern char text_line_oled[max_text_lines][max_text_columns];
 
 // Buffer de amostras do ADC.
 static uint32_t last_time;
@@ -109,6 +110,15 @@ int main()
   strcpy(text_line_oled[6], "               ");
   strcpy(text_line_oled[7], "               ");
 
+  
+  xTaskCreate(
+    task_display_oled,
+    "Task que mantem o display atualizado",
+    configMINIMAL_STACK_SIZE,
+    NULL,
+    tskIDLE_PRIORITY,
+    NULL
+  );
   vTaskStartScheduler();
 
   // o código abaixo deve reestruturado para sepearar a infra de rede do processador do VU
