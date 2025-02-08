@@ -40,17 +40,21 @@
 #include "main.h" // carrega cabeçalhos do main
 
 // buffer de texto para o display oled
+// definido no arquivo de tarefas do display oled
+// tasks/task_display_oled.h
 extern char text_line_oled[max_text_lines][max_text_columns];
+// Preparar área de renderização para o display (ssd1306_width pixels por ssd1306_n_pages páginas)
+extern struct render_area frame_area;
+// zera o display inteiro
+extern uint8_t ssd[ssd1306_buffer_length];
 
 // Buffer de amostras do ADC.
 static uint32_t last_time;
-static bool modo_local = false;
-
-// Preparar área de renderização para o display (ssd1306_width pixels por ssd1306_n_pages páginas)
-extern struct render_area frame_area;
-
-// zera o display inteiro
-extern uint8_t ssd[ssd1306_buffer_length];
+// flag que indica se o controle do drone é local ou remoto
+bool modo_local = false;
+// aceleração obitida no servidor restfull
+int aceleration_x;
+int aceleration_y;
 
 int main()
 {
@@ -562,6 +566,10 @@ bool start_gpio_and_drone_control(){
   /////////////////////////////////////////////////////////
   // inicializa e verifica atuadores e sensores do drone //
   /////////////////////////////////////////////////////////
+  
+  // ativa adc do joistick
+  adc_gpio_init(26); 
+  adc_gpio_init(27);
 
   BaseType_t xReturn = xTaskCreate(
     task_drone_control,
@@ -774,15 +782,28 @@ char button_B_message[50] = "Nenhum evento no botão 2";
 
 // Buffer para resposta HTTP
 char http_response[1024];
+char json_response[1024 * 8] // tamanho a ser definido
 
-// Função para criar a resposta HTTP
+/**
+ * Função para criar a resposta JSON
+ */
+void create_json_noise_response(){
+  // aqui deve ser construido o arquivo JSON para responder a requisição /noise
+  // a resposta deverá ser um array de ruidos, com base na ultima requisição
+}
+
+/**
+ * Função para criar a resposta HTTP generica
+ */
 void create_http_response()
 {
   snprintf(http_response, sizeof(http_response), HTTP_RESPONSE,
            button_A_message, button_B_message);
 }
 
-// Função de callback para processar requisições HTTP
+/**
+ * Função para processar (callback) as requisições HTTP
+ */
 static err_t http_callback(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err)
 {
   if (p == NULL)
@@ -795,25 +816,67 @@ static err_t http_callback(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_
   // Processa a requisição HTTP
   char *request = (char *)p->payload;
 
-  if (strstr(request, "GET /led/on"))
+  // Verifica qual é a requisição
+  if (strstr(request, "GET /acustic_angle/"))
   {
-    gpio_put(LED_PIN_BLUE, 1); // Liga o LED
+    /**
+     * ajusta o angulo de captação do acoplador acustico
+     */
+  }else if (strstr(request, "POST /aceleration/xy"))
+  {
+    if (!modo_local)
+    {
+      // obtem na requisição a posição x e y desejada
+      // aceleration_x = x;
+      // aceleration_y = y;
+    }
+
+    // Envia a resposta HTTP
+    create_http_response();
+    tcp_write(tpcb, http_response, strlen(http_response), TCP_WRITE_FLAG_COPY);
+  
+  }else if (strstr(request, "POST /aceleration/x"))
+  {
+    // obtem na requisição o valor do eixo X
+    if (!modo_local)
+    {
+      // obtem na requisição a posição x desejada
+      // aceleration_x = x;
+    }
+
     // Envia a resposta HTTP
     create_http_response();
     tcp_write(tpcb, http_response, strlen(http_response), TCP_WRITE_FLAG_COPY);
   }
-  else if (strstr(request, "GET /led/off"))
+  else if (strstr(request, "POST /aceleration/y"))
   {
-    gpio_put(LED_PIN_BLUE, 0); // Desliga o LED
+    // obtem na requisição o valor do eixo Y
+    if (!modo_local)
+    {
+      // obtem na requisição a posição y desejada
+      // aceleration_y = y;
+    }
+    
     // Envia a resposta HTTP
     create_http_response();
     tcp_write(tpcb, http_response, strlen(http_response), TCP_WRITE_FLAG_COPY);
   }
   else if (strstr(request, "GET /update"))
   {
+    // deve enviar a situação do drone
     // Envia a resposta HTTP
     create_http_response();
     tcp_write(tpcb, http_response, strlen(http_response), TCP_WRITE_FLAG_COPY);
+  }
+  else if (strstr(request, "GET /noise"))
+  {
+    // Envia a resposta HTTP
+    // obtem o array de amostras de ruidos coletados
+
+
+
+    create_json_noise_response();
+    tcp_write(tpcb, json_response, strlen(json_response), TCP_WRITE_FLAG_COPY);
   }
 
 https://github.com/BitDogLab/BitDogLab-C/blob/main/wifi_button_and_led/pico_w_wifi_complete_example.c
