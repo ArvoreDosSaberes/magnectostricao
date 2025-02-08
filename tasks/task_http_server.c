@@ -7,16 +7,18 @@
 
 #include "pico/cyw43_arch.h"
 
+#include "tasks_paramiters.h"
 #include "task_http_server.h"
 
 void task_http_server(void *pvParameters) {
 
+   printf("Task HTTP Server\n");
    TickType_t xLastWakeTime = xTaskGetTickCount();
    while (1)
    {
       cyw43_arch_poll(); // Necessário para manter o Wi-Fi ativo
-      printf("Task HTTP Server\ %d\n", xLastWakeTime);
-      xTaskDelayUntil(xLastWakeTime, 500 / portTICK_PERIOD_MS);
+      //printf("Loop Task HTTP Server\ %d\n", xLastWakeTime);
+      xTaskDelayUntil(&xLastWakeTime, TASK_HTTP_SERVER_DELAY);
    }
       
 }

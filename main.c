@@ -88,12 +88,8 @@ int main()
 
   sleep_ms(INTER_SCREEN_DELAY);
 
-  if(!start_gpio_and_drone_control()) return 1;
-
-  sleep_ms(INTER_SCREEN_DELAY);
-
-  if(!start_ADC_with_DMA()) return 1;
-
+  if(!start_display_oled()) return 1;
+  
   sleep_ms(INTER_SCREEN_DELAY);
 
   if(!start_network_infrastructure()) return 1;
@@ -104,8 +100,12 @@ int main()
 
   sleep_ms(INTER_SCREEN_DELAY);
 
-  if(!start_display_oled()) return 1;
-  
+  if(!start_ADC_with_DMA()) return 1;
+
+  sleep_ms(INTER_SCREEN_DELAY);
+
+  if(!start_gpio_and_drone_control()) return 1;
+
   sleep_ms(INTER_SCREEN_DELAY);
 
   strcpy(text_line_oled[0], "               ");

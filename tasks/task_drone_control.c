@@ -14,6 +14,7 @@
 #include "stdio.h"
 
 #include "task_adc_with_dma.h"
+#include "tasks_paramiters.h"
 
 /**
  * @brief Controls the drone operations.
@@ -33,9 +34,12 @@ void task_drone_control(void *pvParameters){
     TickType_t xLastWakeTime = xTaskGetTickCount();
     while (1)    
     {
-        // implementar código que recebe os comandos do computador de borda via
-        // servidor web
-        printf("Loop Task Drone Control %d\n", xLastWakeTime);
-        xTaskDelayUntil(&xLastWakeTime,(10 / portTICK_PERIOD_MS)); /* delay 100 ticks */
+        // Implementar código que recebe os comandos do computador de borda via
+        // servidor web.
+        // Estes comandos serão enviados pela GPIO para os motores e sensores do drone
+        // awqui se usa o 
+
+        //printf("Loop Task Drone Control %d\n", xLastWakeTime);
+        xTaskDelayUntil(&xLastWakeTime, TASK_DRONE_CONTROL_DELAY); /* delay 100 ticks */
     }
 }

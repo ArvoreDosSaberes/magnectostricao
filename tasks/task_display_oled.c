@@ -16,6 +16,8 @@
 #include "pico/stdlib.h"
 
 #include "task_display_oled.h"
+#include "tasks_paramiters.h"
+
 #include "inc/ssd1306.h"
 
 char text_line_oled[max_text_lines][max_text_columns];
@@ -56,9 +58,8 @@ void task_display_oled(void *pvParameters)
     while (1)
     {
         // ssd1306_write_array(ssd, &frame_area, &text);
-        uint8_t y = 0;
         printf("Task Display OLED %d\n", xLastWakeTime);
-        /*
+        
         vTaskSuspendAll();
         printf(text_line_oled[0]);
         printf("\n");
@@ -77,17 +78,18 @@ void task_display_oled(void *pvParameters)
         printf(text_line_oled[7]);
         printf("\n");
         printf("\n");
-        //printf("uxHighWaterMark: %d\n", uxTaskGetStackHighWaterMark( NULL ));
+
+        uint8_t y = 0;
         for (uint i = 0; i < count_of(text_line_oled); i++)
         {
             ssd1306_draw_string(ssd, 5, y, text_line_oled[i]);
             y += ssd1306_line_height;
         }
-        
         render_on_display(ssd, &frame_area);
-        */
-        xTaskDelayUntil(&xLastWakeTime, 500/portTICK_PERIOD_MS); 
+        xTaskResumeAll();
         
-        printf("fim loop taskdisplayoled %d\n", xLastWakeTime);
+        xTaskDelayUntil(&xLastWakeTime, TASK_DISPLAY_OLED_DELAY); 
+        
+        //printf("fim loop taskdisplayoled %d\n", xLastWakeTime);
     }
 }
