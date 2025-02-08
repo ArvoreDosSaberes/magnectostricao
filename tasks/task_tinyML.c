@@ -11,6 +11,10 @@
 #include <timers.h>
 #include <semphr.h>
 
+#include "stdio.h"
+#include "string.h"
+#include "pico/stdlib.h"
+
 #include "task_adc_with_dma.h"
 
 extern uint16_t adc_buffer[SAMPLES];
@@ -29,12 +33,14 @@ void task_tinyML(void *pvParameters){
     /* Unused parameters. */
     ( void ) pvParameters;
 
+    TickType_t xPreviousWakeTime = xTaskGetTickCount();
     while (1)    
     {
-        printf("Task TinyML\n");
+        printf("Task TinyML %d\n", xPreviousWakeTime);
         // implementa código que classifica as amostras captadas pelo microfone
         // esta task está atrelada a task_adc_with_dma, que deverá emitir 
         // um evento ou depositar num queue a leitura feita
-        vTaskDelay(100 / portTICK_PERIOD_MS); /* delay 100 ticks */
+        
+        xTaskDelayUntil(&xPreviousWakeTime, (1000 / portTICK_PERIOD_MS)); /* delay 100 ticks */
     }
 }

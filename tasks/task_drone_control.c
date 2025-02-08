@@ -11,6 +11,8 @@
 #include <timers.h>
 #include <semphr.h>
 
+#include "stdio.h"
+
 #include "task_adc_with_dma.h"
 
 /**
@@ -27,10 +29,13 @@ void task_drone_control(void *pvParameters){
     /* Unused parameters. */
     ( void ) pvParameters;
 
+    printf("Task Drone Control\n");
+    TickType_t xLastWakeTime = xTaskGetTickCount();
     while (1)    
     {
         // implementar código que recebe os comandos do computador de borda via
         // servidor web
-        vTaskDelay((500 / portTICK_PERIOD_MS)); /* delay 100 ticks */
+        printf("Loop Task Drone Control %d\n", xLastWakeTime);
+        xTaskDelayUntil(&xLastWakeTime,(10 / portTICK_PERIOD_MS)); /* delay 100 ticks */
     }
 }

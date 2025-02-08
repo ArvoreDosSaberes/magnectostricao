@@ -31,6 +31,7 @@ void task_adc_with_dma(void *pvParameters)
 {
 
   (void)pvParameters;
+  printf("Task ADC DMA\n");
   // O código abaixo deve ser transportado para a TASK (FreeRTOS) que
   // faz o processamento da amostragem via DMA
   adc_gpio_init(MIC_PIN);
@@ -60,8 +61,10 @@ void task_adc_with_dma(void *pvParameters)
 
   adc_Buffer_Semaphore = xSemaphoreCreateBinary();
 
+  TickType_t xLastWakeTime = xTaskGetTickCount();
   while (1)
   {
+    printf("LOOP Task ADC DMA %d\n", xLastWakeTime);
     // Realiza uma amostragem do microfone. deve ser transportado para a TASK de amostragem ADC
 
     if (xSemaphoreTake(adc_Buffer_Semaphore, portMAX_DELAY) == pdTRUE)
@@ -86,14 +89,14 @@ void task_adc_with_dma(void *pvParameters)
     switch (intensity)
     {
     case 0:
-      strcpy(text_line_oled[3], "   Sem Som    ");
+      memcpy(text_line_oled[3], "   Sem Som    ", max_text_columns);
       break; // Se o som for muito baixo, não acende nada.
     case 1:
-      strcpy(text_line_oled[3], "   Pouco Som  ");
+      memcpy(text_line_oled[3], "   Pouco Som  ", max_text_columns);
       npSetLED(12, 0, 0, 80); // Acende apenas o centro.
       break;
     case 2:
-      strcpy(text_line_oled[3], " Nivel ideal ");
+      memcpy(text_line_oled[3], " Nivel ideal ", max_text_columns);
       npSetLED(12, 0, 0, 120); // Acente o centro.
 
       // Primeiro anel.
@@ -103,7 +106,7 @@ void task_adc_with_dma(void *pvParameters)
       npSetLED(17, 0, 0, 80);
       break;
     case 3:
-      strcpy(text_line_oled[3], "   Alto Som   ");
+      memcpy(text_line_oled[3], "   Alto Som   ", max_text_columns);
       // Centro.
       npSetLED(12, 60, 60, 0);
 
@@ -124,7 +127,7 @@ void task_adc_with_dma(void *pvParameters)
       npSetLED(22, 0, 0, 80);
       break;
     case 4:
-      strcpy(text_line_oled[3], "Muito Alto Som");
+      memcpy(text_line_oled[3], "Muito Alto Som", max_text_columns);
       // Centro.
       npSetLED(12, 80, 0, 0);
 
@@ -159,8 +162,9 @@ void task_adc_with_dma(void *pvParameters)
     npWrite();
 
     sprintf(text_line_oled[5], "   %02.2f dB     ", db);
-
-    vTaskDelay(100 / portTICK_PERIOD_MS);
+    taskYIELD();
+    xTaskDelayUntil(&xLastWakeTime, 100 / portTICK_PERIOD_MS);
+    printf("FIM LOOP Task ADC DMA %d\n", xLastWakeTime);
   }
 }
 

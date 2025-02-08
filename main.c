@@ -30,6 +30,7 @@
 #include "inc/neopixel.h"
 
 #include "inc/magnectostriccao.h" // Carrega parametros gerais do sistema
+#include "tasks/tasks_paramiters.h" // parametros para criação das tasks
 
 #include "tasks/task_adc_with_dma.h" // carrega tarefas do ADC
 #include "tasks/task_display_oled.h" // Carrega tarefas do display
@@ -133,9 +134,9 @@ bool start_display_oled(){
   BaseType_t xReturn = xTaskCreate(
     task_display_oled,
     "Task que mantem o display atualizado",
-    configMINIMAL_STACK_SIZE * 2.5,
+    TASK_DISPLAY_OLED_STACK_SIZE,
     NULL,
-    tskIDLE_PRIORITY + 1,
+    TASK_DISPLAY_OLED_PRIORITY,
     NULL
   );
 
@@ -348,9 +349,9 @@ bool start_tinyML(){
   BaseType_t xReturn = xTaskCreate(
     task_tinyML, 
     "tinyML_task", 
-    configMINIMAL_STACK_SIZE * 1,
+    TASK_TINYML_STACK_SIZE,
     NULL, 
-    tskIDLE_PRIORITY + 1, 
+    TASK_TINYML_PRIORITY, 
     NULL);
 
   if (xReturn != pdPASS) {
@@ -408,9 +409,9 @@ bool start_ADC_with_DMA(){
   BaseType_t xReturn = xTaskCreate(
     task_adc_with_dma, 
     "Task ADC com DMA", 
-    configMINIMAL_STACK_SIZE * 1,
+    TASK_ADC_DMA_STACK_SIZE,
     NULL, 
-    tskIDLE_PRIORITY + 1, 
+    TASK_ADC_DMA_PRIORITY, 
     NULL);
   if (xReturn != pdPASS) {
     strcpy(text_line_oled[0], "     FALHA     ");
@@ -565,9 +566,9 @@ bool start_gpio_and_drone_control(){
   BaseType_t xReturn = xTaskCreate(
     task_drone_control,
     "Task Drone Control",
-    configMINIMAL_STACK_SIZE * 1.5,
+    TASK_DRONE_CONTROL_STACK_SIZE,
     NULL,
-    tskIDLE_PRIORITY + 1,
+    TASK_DRONE_CONTROL_PRIORITY,
     NULL
   );
     if (xReturn != pdPASS) {
@@ -666,9 +667,9 @@ bool start_network_infrastructure(){
   BaseType_t xReturn = xTaskCreate(
     task_http_server, 
     "Task HTTP Server", 
-    configMINIMAL_STACK_SIZE * 1.5, 
+    TASK_HTTP_SERVER_STACK_SIZE, 
     NULL, 
-    tskIDLE_PRIORITY + 1, 
+    TASK_HTTP_SERVER_PRIORITY, 
     NULL);
 
   if (xReturn != pdPASS) {

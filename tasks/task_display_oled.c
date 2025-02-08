@@ -27,7 +27,7 @@ char text_line_oled[max_text_lines][max_text_columns];
  */
 void task_display_oled(void *pvParameters)
 {
-    //printf("Display OLED\n");
+    printf("Task Display OLED\n");
     /* Unused parameters. */
     (void)pvParameters;
 
@@ -35,7 +35,9 @@ void task_display_oled(void *pvParameters)
     memcpy(text_line_oled[0], "               ", max_text_columns);
     memcpy(text_line_oled[1], " Nivel do Sinal", max_text_columns);
     memcpy(text_line_oled[2], "               ", max_text_columns);
+    memcpy(text_line_oled[3], "               ", max_text_columns);
     memcpy(text_line_oled[4], "               ", max_text_columns);
+    memcpy(text_line_oled[5], "               ", max_text_columns);
     memcpy(text_line_oled[6], "               ", max_text_columns);
     memcpy(text_line_oled[7], "               ", max_text_columns);
     xTaskResumeAll();
@@ -50,13 +52,30 @@ void task_display_oled(void *pvParameters)
     // zera o display inteiro
     uint8_t ssd[ssd1306_buffer_length];
 
+    TickType_t xLastWakeTime = xTaskGetTickCount();
     while (1)
     {
         // ssd1306_write_array(ssd, &frame_area, &text);
         uint8_t y = 0;
-        
+        printf("Task Display OLED %d\n", xLastWakeTime);
+        /*
         vTaskSuspendAll();
+        printf(text_line_oled[0]);
+        printf("\n");
         printf(text_line_oled[1]);
+        printf("\n");
+        printf(text_line_oled[2]);
+        printf("\n");
+        printf(text_line_oled[3]);
+        printf("\n");
+        printf(text_line_oled[4]);
+        printf("\n");
+        printf(text_line_oled[5]);
+        printf("\n");
+        printf(text_line_oled[6]);
+        printf("\n");
+        printf(text_line_oled[7]);
+        printf("\n");
         printf("\n");
         //printf("uxHighWaterMark: %d\n", uxTaskGetStackHighWaterMark( NULL ));
         for (uint i = 0; i < count_of(text_line_oled); i++)
@@ -66,8 +85,9 @@ void task_display_oled(void *pvParameters)
         }
         
         render_on_display(ssd, &frame_area);
-        xTaskResumeAll();
-
-        vTaskDelay(500/portTICK_PERIOD_MS); 
+        */
+        xTaskDelayUntil(&xLastWakeTime, 500/portTICK_PERIOD_MS); 
+        
+        printf("fim loop taskdisplayoled %d\n", xLastWakeTime);
     }
 }
