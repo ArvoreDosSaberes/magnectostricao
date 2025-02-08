@@ -47,34 +47,16 @@ static uint32_t last_time;
 static bool modo_local = false;
 
 // Preparar área de renderização para o display (ssd1306_width pixels por ssd1306_n_pages páginas)
-static struct render_area frame_area = {
-  start_column : 0,
-  end_column : ssd1306_width - 1,
-  start_page : 0,
-  end_page : ssd1306_n_pages - 1
-};
+extern struct render_area frame_area;
 
 // zera o display inteiro
-static uint8_t ssd[ssd1306_buffer_length];
+extern uint8_t ssd[ssd1306_buffer_length];
 
 int main()
 {
   stdio_init_all(); // Inicializa os tipos stdio padrão presentes ligados ao binário
 
-  // Inicialização do i2c
-  i2c_init(i2c1, ssd1306_i2c_clock * 1000);
-  gpio_set_function(I2C_SDA, GPIO_FUNC_I2C);
-  gpio_set_function(I2C_SCL, GPIO_FUNC_I2C);
-  gpio_pull_up(I2C_SDA);
-  gpio_pull_up(I2C_SCL);
-
-  // Processo de inicialização completo do OLED SSD1306
-  ssd1306_init();
-
-  calculate_render_area_buffer_length(&frame_area);
-
-  memset(ssd, 0, ssd1306_buffer_length);
-  render_on_display(ssd, &frame_area);
+  init_display_oled();
 
   show_intro();
 
@@ -162,6 +144,24 @@ bool start_display_oled(){
     return false;
   }
   return true;
+}
+
+void init_display_oled(){
+  // Inicialização do i2c
+  i2c_init(i2c1, ssd1306_i2c_clock * 1000);
+  gpio_set_function(I2C_SDA, GPIO_FUNC_I2C);
+  gpio_set_function(I2C_SCL, GPIO_FUNC_I2C);
+  gpio_pull_up(I2C_SDA);
+  gpio_pull_up(I2C_SCL);
+
+  // Processo de inicialização completo do OLED SSD1306
+  ssd1306_init();
+
+  calculate_render_area_buffer_length(&frame_area);
+
+  memset(ssd, 0, ssd1306_buffer_length);
+  render_on_display(ssd, &frame_area);
+
 }
 /**
  * Mostra a tela de abertura do projeto.

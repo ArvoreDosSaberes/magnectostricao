@@ -21,6 +21,18 @@
 #include "inc/ssd1306.h"
 
 char text_line_oled[max_text_lines][max_text_columns];
+
+// Preparar área de renderização para o display (ssd1306_width pixels por ssd1306_n_pages páginas)
+struct render_area frame_area = {
+  start_column : 0,
+  end_column : ssd1306_width - 1,
+  start_page : 0,
+  end_page : ssd1306_n_pages - 1
+};
+
+// zera o display inteiro
+uint8_t ssd[ssd1306_buffer_length];
+
 /**
  * @brief Tarefa para uso do Display OLED
  *
@@ -44,16 +56,6 @@ void task_display_oled(void *pvParameters)
     memcpy(text_line_oled[7], "               ", max_text_columns);
     xTaskResumeAll();
         
-    struct render_area frame_area = {
-        start_column : 0,
-        end_column : ssd1306_width - 1,
-        start_page : 0,
-        end_page : ssd1306_n_pages - 1
-    };
-
-    // zera o display inteiro
-    uint8_t ssd[ssd1306_buffer_length];
-
     TickType_t xLastWakeTime = xTaskGetTickCount();
     while (1)
     {
