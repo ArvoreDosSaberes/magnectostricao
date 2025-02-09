@@ -787,9 +787,42 @@ char json_response[1024 * 8]; // tamanho a ser definido
 /**
  * Função para criar a resposta JSON
  */
+
+void create_json_update_response(){
+  // constroi a respsota json
+  // a resposta deve conter a situação atual do sistema
+  // isso inclue a localização obtida no gps do drone
+  // aquecimento interno do processador
+  // e a situação do acoplador acustico
+  snprintf(http_response, sizeof(http_response),
+           "HTTP/1.1 200 OK\r\nContent-Type: text/json; charset=UTF-8\r\n\r\n"
+           "{\r\n"
+           // em data vai os valores para cada amostra obtida
+           "  \"localizacao\": {\r\n "
+           "    \"latitude\": 0, \"longitude\": 0},\r\n"
+           "  \"temperatura\": 0,\r\n"
+           "  \"acoplador\": 0,\r\n"
+           "}\r\n"
+           "}\r\n"
+           "\r\n");
+}
 void create_json_noise_response(){
-  // aqui deve ser construido o arquivo JSON para responder a requisição /noise
-  // a resposta deverá ser um array de ruidos, com base na ultima requisição
+  /// constroi resposta em sjson, 
+  /// talvez cjson, ou uma solução mais simples já que será enviados 
+  /// apenas uma sequência de números que representa as amostragem do ADC
+  snprintf(http_response, sizeof(http_response),
+           "HTTP/1.1 200 OK\r\nContent-Type: text/json; charset=UTF-8\r\n\r\n"
+           "{\r\n"
+           // em data vai os valores para cada amostra obtida
+           "  \"amostragens\": {\r\n "
+           "    \"order\": 0, \"data\":[123, 123, 123, 123, 123, 123, 123, 123, 123, 123]},\r\n"
+           "    \"order\": 1, \"data\":[43, 43, 43, 43, 43, 43, 43, 43, 43, 43]},\r\n"
+           "    \"order\": 2, \"data\":[43, 43, 43, 43, 43, 43, 43, 43, 43, 43]},\r\n"
+           "    \"order\": 3, \"data\":[43, 43, 43, 43, 43, 43, 43, 43, 43, 43]},\r\n"
+           "}\r\n"
+           "}\r\n"
+           "\r\n");
+  
 }
 
 /**
@@ -865,8 +898,8 @@ static err_t http_callback(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_
   {
     // deve enviar a situação do drone
     // Envia a resposta HTTP
-    create_http_response();
-    tcp_write(tpcb, http_response, strlen(http_response), TCP_WRITE_FLAG_COPY);
+    create_json_update_response();
+    tcp_write(tpcb, json_response, strlen(json_response), TCP_WRITE_FLAG_COPY);
   }
   else if (strstr(request, "GET /noise"))
   {
