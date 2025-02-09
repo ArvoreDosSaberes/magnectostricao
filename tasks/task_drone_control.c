@@ -12,6 +12,8 @@
 #include <semphr.h>
 
 #include "stdio.h"
+#include "hardware/adc.h"
+#include "hardware/dma.h"
 
 #include "hardware/adc.h"
 
