@@ -13,6 +13,8 @@
 
 #include "stdio.h"
 
+#include "hardware/adc.h"
+
 #include "task_adc_with_dma.h"
 #include "tasks_paramiters.h"
 
