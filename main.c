@@ -643,7 +643,26 @@ char button2_message[50] = "Nenhum evento no botão 2";
 
 // Buffer para resposta HTTP
 char http_response[1024];
+char json_response[1024 * 8]; // buffer para envio da respsota em json com array de amostragem
 
+void create_json_response(){
+  /// constroi resposta em sjson, 
+  /// talvez cjson, ou uma solução mais simples já que será enviados 
+  /// apenas uma sequência de números que representa as amostragem do ADC
+  snprintf(http_response, sizeof(http_response),
+           "HTTP/1.1 200 OK\r\nContent-Type: text/json; charset=UTF-8\r\n\r\n"
+           "{\r\n"
+           // em data vai os valores para cada amostra obtida
+           "  \"amostragens\": {\r\n "
+           "    \"order\": 0, \"data\":[123, 123, 123, 123, 123, 123, 123, 123, 123, 123]},\r\n"
+           "    \"order\": 1, \"data\":[43, 43, 43, 43, 43, 43, 43, 43, 43, 43]},\r\n"
+           "    \"order\": 2, \"data\":[43, 43, 43, 43, 43, 43, 43, 43, 43, 43]},\r\n"
+           "    \"order\": 3, \"data\":[43, 43, 43, 43, 43, 43, 43, 43, 43, 43]},\r\n"
+           "}\r\n"
+           "}\r\n"
+           "\r\n");
+  
+}
 // Função para criar a resposta HTTP
 void create_http_response()
 {
@@ -681,17 +700,66 @@ static err_t http_callback(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_
   // Processa a requisição HTTP
   char *request = (char *)p->payload;
 
-  if (strstr(request, "GET /led/on"))
+  // Verifica qual é a requisição
+  if (strstr(request, "GET /acustic_angle/"))
   {
-    gpio_put(LED_PIN, 1); // Liga o LED
-  }
-  else if (strstr(request, "GET /led/off"))
+    /**
+     * ajusta o angulo de captação do acoplador acustico
+     */
+  }else if (strstr(request, "POST /aceleration/xy"))
   {
-    gpio_put(LED_PIN, 0); // Desliga o LED
-  }
+    if (!modo_local)
+    {
+      // obtem na requisição a posição x e y desejada
+      // aceleration_x = x;
+      // aceleration_y = y;
+    }
 
-  // Envia a resposta HTTP
-  tcp_write(tpcb, HTTP_RESPONSE, strlen(HTTP_RESPONSE), TCP_WRITE_FLAG_COPY);
+    // Envia a resposta HTTP
+    create_http_response();
+    tcp_write(tpcb, http_response, strlen(http_response), TCP_WRITE_FLAG_COPY);
+  
+  }else if (strstr(request, "POST /aceleration/x"))
+  {
+    // obtem na requisição o valor do eixo X
+    if (!modo_local)
+    {
+      // obtem na requisição a posição x desejada
+      // aceleration_x = x;
+    }
+
+    // Envia a resposta HTTP
+    create_http_response();
+    tcp_write(tpcb, http_response, strlen(http_response), TCP_WRITE_FLAG_COPY);
+  }
+  else if (strstr(request, "POST /aceleration/y"))
+  {
+    // obtem na requisição o valor do eixo Y
+    if (!modo_local)
+    {
+      // obtem na requisição a posição y desejada
+      // aceleration_y = y;
+    }
+    
+    // Envia a resposta HTTP
+    create_http_response();
+    tcp_write(tpcb, http_response, strlen(http_response), TCP_WRITE_FLAG_COPY);
+  }
+  else if (strstr(request, "GET /update"))
+  {
+    // deve enviar a situação do drone
+    // Envia a resposta HTTP
+    create_http_response();
+    tcp_write(tpcb, http_response, strlen(http_response), TCP_WRITE_FLAG_COPY);
+  }
+  else if (strstr(request, "GET /noise"))
+  {
+    // Envia a resposta HTTP
+    // obtem o array de amostras de ruidos coletados
+
+    create_json_noise_response();
+    tcp_write(tpcb, json_response, strlen(json_response), TCP_WRITE_FLAG_COPY);
+  }
 
   // Libera o buffer recebido
   pbuf_free(p);
