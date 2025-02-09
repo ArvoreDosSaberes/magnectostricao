@@ -782,7 +782,7 @@ char button_B_message[50] = "Nenhum evento no botão 2";
 
 // Buffer para resposta HTTP
 char http_response[1024];
-char json_response[1024 * 8] // tamanho a ser definido
+char json_response[1024 * 8]; // tamanho a ser definido
 
 /**
  * Função para criar a resposta JSON
@@ -873,13 +873,10 @@ static err_t http_callback(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_
     // Envia a resposta HTTP
     // obtem o array de amostras de ruidos coletados
 
-
-
     create_json_noise_response();
     tcp_write(tpcb, json_response, strlen(json_response), TCP_WRITE_FLAG_COPY);
   }
 
-https://github.com/BitDogLab/BitDogLab-C/blob/main/wifi_button_and_led/pico_w_wifi_complete_example.c
   // Libera o buffer recebido
   pbuf_free(p);
 
