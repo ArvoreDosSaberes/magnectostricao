@@ -130,22 +130,20 @@ target_compile_definitions(${PROJECT_NAME}  PRIVATE
         PICO_STACK_SIZE=0x1000
 )
 
-add_library(pico-tflmicro STATIC)
-
-target_include_directories(pico-tflmicro
+target_include_directories(${PROJECT_NAME}
   PUBLIC
-  ${CMAKE_CURRENT_LIST_DIR}/TensorFlow_Lite
-  ${CMAKE_CURRENT_LIST_DIR}/TensorFlow_Litethird_party/ruy
-  ${CMAKE_CURRENT_LIST_DIR}/TensorFlow_Litethird_party/gemmlowp
-  ${CMAKE_CURRENT_LIST_DIR}/TensorFlow_Litethird_party/kissfft
-  ${CMAKE_CURRENT_LIST_DIR}/TensorFlow_Litethird_party/flatbuffers
-  ${CMAKE_CURRENT_LIST_DIR}/TensorFlow_Litethird_party/cmsis/CMSIS/Core/Include
-  ${CMAKE_CURRENT_LIST_DIR}/TensorFlow_Litethird_party/flatbuffers/include
-  ${CMAKE_CURRENT_LIST_DIR}/TensorFlow_Litethird_party/cmsis_nn/Include
+  ${CMAKE_CURRENT_LIST_DIR}/TensorFlow_Lite/
+  ${CMAKE_CURRENT_LIST_DIR}/TensorFlow_Lite/third_party/ruy
+  ${CMAKE_CURRENT_LIST_DIR}/TensorFlow_Lite/third_party/gemmlowp
+  ${CMAKE_CURRENT_LIST_DIR}/TensorFlow_Lite/third_party/kissfft
+  ${CMAKE_CURRENT_LIST_DIR}/TensorFlow_Lite/third_party/flatbuffers
+  ${CMAKE_CURRENT_LIST_DIR}/TensorFlow_Lite/third_party/cmsis/CMSIS/Core/Include
+  ${CMAKE_CURRENT_LIST_DIR}/TensorFlow_Lite/third_party/flatbuffers/include
+  ${CMAKE_CURRENT_LIST_DIR}/TensorFlow_Lite/third_party/cmsis_nn/Include
 )
 
 target_compile_definitions(
-  pico-tflmicro
+  ${PROJECT_NAME}
   PUBLIC
   COMPILE_DEFINITIONS TF_LITE_DISABLE_X86_NEON=1
   COMPILE_DEFINITIONS TF_LITE_STATIC_MEMORY=1
@@ -156,7 +154,7 @@ target_compile_definitions(
 )
 
 set_target_properties(
-  pico-tflmicro
+  ${PROJECT_NAME}
   PROPERTIES
   COMPILE_FLAGS -Os
   COMPILE_FLAGS -fno-rtti
@@ -166,43 +164,13 @@ set_target_properties(
 )
 
 target_link_libraries(
-  pico-tflmicro
+  ${PROJECT_NAME}
   pico_stdlib
   pico_multicore
 )
 
-add_library(pico-tflmicro_test STATIC)
-
-target_include_directories(pico-tflmicro_test
-  PUBLIC
-  ${CMAKE_CURRENT_LIST_DIR}/TensorFlow_Lite
-  ${CMAKE_CURRENT_LIST_DIR}/TensorFlow_Litethird_party/ruy
-  ${CMAKE_CURRENT_LIST_DIR}/TensorFlow_Litethird_party/gemmlowp
-  ${CMAKE_CURRENT_LIST_DIR}/TensorFlow_Litethird_party/kissfft
-  ${CMAKE_CURRENT_LIST_DIR}/TensorFlow_Litethird_party/flatbuffers
-  ${CMAKE_CURRENT_LIST_DIR}/TensorFlow_Litethird_party/cmsis/CMSIS/Core/Include
-  ${CMAKE_CURRENT_LIST_DIR}/TensorFlow_Litethird_party/flatbuffers/include
-  ${CMAKE_CURRENT_LIST_DIR}/TensorFlow_Litethird_party/cmsis_nn/Include
-)
-
-target_compile_definitions(
-  pico-tflmicro_test
-  PUBLIC
-  COMPILE_DEFINITIONS TF_LITE_DISABLE_X86_NEON=1
-  COMPILE_DEFINITIONS TF_LITE_STATIC_MEMORY=1
-  COMPILE_DEFINITIONS CMSIS_NN=1
-)
-
-set_target_properties(
-  pico-tflmicro_test
-  PROPERTIES
-  COMPILE_FLAGS -fno-rtti
-  COMPILE_FLAGS -fno-exceptions
-  COMPILE_FLAGS -fno-threadsafe-statics
-  COMPILE_FLAGS -nostdlib
-)
-
 target_link_libraries(
+  ${PROJECT_NAME}
   pico-tflmicro_test
   pico_stdlib
   pico_multicore
