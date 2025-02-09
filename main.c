@@ -24,8 +24,8 @@ static dma_channel_config dma_cfg;
 // Buffer de amostras do ADC.
 static uint16_t adc_buffer[SAMPLES];
 
-static char text[max_text_lines][max_text_columns] = {0};
-static uint32_t last_time;
+static char text[max_text_lines][max_text_columns] = {0}; 
+
 static bool modo_local = false;
 
 // Preparar área de renderização para o display (ssd1306_width pixels por ssd1306_n_pages páginas)
@@ -645,7 +645,25 @@ char button2_message[50] = "Nenhum evento no botão 2";
 char http_response[1024];
 char json_response[1024 * 8]; // buffer para envio da respsota em json com array de amostragem
 
-void create_json_response(){
+void create_json_update_response(){
+  // constroi a respsota json
+  // a resposta deve conter a situação atual do sistema
+  // isso inclue a localização obtida no gps do drone
+  // aquecimento interno do processador
+  // e a situação do acoplador acustico
+  snprintf(http_response, sizeof(http_response),
+           "HTTP/1.1 200 OK\r\nContent-Type: text/json; charset=UTF-8\r\n\r\n"
+           "{\r\n"
+           // em data vai os valores para cada amostra obtida
+           "  \"localizacao\": {\r\n "
+           "    \"latitude\": 0, \"longitude\": 0},\r\n"
+           "  \"temperatura\": 0,\r\n"
+           "  \"acoplador\": 0,\r\n"
+           "}\r\n"
+           "}\r\n"
+           "\r\n");
+}
+void create_json_noise_response(){
   /// constroi resposta em sjson, 
   /// talvez cjson, ou uma solução mais simples já que será enviados 
   /// apenas uma sequência de números que representa as amostragem do ADC
@@ -749,7 +767,7 @@ static err_t http_callback(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_
   {
     // deve enviar a situação do drone
     // Envia a resposta HTTP
-    create_http_response();
+    create_json_update_response();
     tcp_write(tpcb, http_response, strlen(http_response), TCP_WRITE_FLAG_COPY);
   }
   else if (strstr(request, "GET /noise"))
