@@ -9,4 +9,4 @@ Diante desse cenário, este projeto propõe um sistema inovador de monitoramento
 
 O drone terrestre recebe comandos do computador de borda, que mantém um mapa atualizado da estação de distribuição e integra dados de um sistema de GPS. Dessa forma, o monitoramento se torna automatizado e preciso, reduzindo riscos operacionais e aumentando a eficiência na detecção de falhas incipientes nos transformadores.
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/AHvlCWeeA88?si=SA3-syrxE9UODjvd" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+[Aprsentação do Projeto em Vídeo no Youtube](https://youtu.be/AHvlCWeeA88?si=6y2-KHquPNgekdsO)
