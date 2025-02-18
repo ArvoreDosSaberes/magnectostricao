@@ -84,8 +84,8 @@ void task_adc_with_dma(void *pvParameters)
     // realiza a exibição do status da coleta de ruidos
     // Pega a potência média da amostragem do microfone.
     float avg = mic_power();
-    float db = 20.f * log10(avg / ADC_MAX); // Calcula o volume em decibels.
     avg = 2.f * abs(ADC_ADJUST(avg)); // Ajusta para intervalo de 0 a 3.3V. (apenas magnitude, sem sinal)
+    float db = 20.f * log(ADC_MAX / avg); // Calcula o volume em decibels.
 
     uint intensity = get_intensity(avg); // Calcula intensidade a ser mostrada na matriz de LEDs.
 
