@@ -165,12 +165,6 @@ set_target_properties(
 
 target_link_libraries(
   ${PROJECT_NAME}
-  pico_stdlib
-  pico_multicore
-)
-
-target_link_libraries(
-  ${PROJECT_NAME}
   pico-tflmicro_test
   pico_stdlib
   pico_multicore
