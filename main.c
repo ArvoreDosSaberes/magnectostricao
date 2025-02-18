@@ -458,8 +458,8 @@ int main()
 
     // Pega a potência média da amostragem do microfone.
     float avg = mic_power();
-    float db = 20.f * log10(avg / ADC_MAX);
     avg = 2.f * abs(ADC_ADJUST(avg)); // Ajusta para intervalo de 0 a 3.3V. (apenas magnitude, sem sinal)
+    float dbv = 20.f * log(ADC_MAX / avg); // Converte para dBV.
 
     uint intensity = get_intensity(avg); // Calcula intensidade a ser mostrada na matriz de LEDs.
 
@@ -542,7 +542,7 @@ int main()
     // Atualiza a matriz.
     npWrite();
 
-    sprintf(text[5], "   %02.2f dB     ", db);
+    sprintf(text[5], "  %03.02f dBV   ", dbv);
 
     if (time_us_32() - last_time > 10000)
     {
@@ -826,9 +826,9 @@ static void monitor_buttons_callback(unsigned int gpio, long unsigned int events
       snprintf(button2_message, sizeof(button2_message), "Botão 2 foi pressionado!");
       modo_local = !modo_local;
       if (modo_local)
-        strcpy(text[7], "   modo local  ");
+        strcpy(text[7], "  modo local  ");
       else
-       strcpy(text[7], "   modo remoto  ");
+       strcpy(text[7],  " modo remoto  ");
       
     }
     else
