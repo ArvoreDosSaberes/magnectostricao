@@ -15,7 +15,6 @@
 #include "pico/binary_info.h"
 #include "pico/stdlib.h"
 #include "pico/cyw43_arch.h"
-#include "hardware/vreg.h"
 #include "hardware/clocks.h"
 
 #include "hardware/adc.h"
@@ -37,6 +36,7 @@
 #include "tasks/task_drone_control.h" // Carrega tarefas do controle de drone
 #include "tasks/task_tinyML.h" // Carrega tarefas do TinyML
 #include "tasks/task_http_server.h" // Carrega tarefas do http server
+#include "tasks/task_vu_leds.h" // Carrega tarefas do VU LEDS
 #include "main.h" // carrega cabeçalhos do main
 
 // buffer de texto para o display oled
@@ -66,7 +66,7 @@ int main()
 
   sleep_ms(INTER_SCREEN_DELAY);
 
-  start_VU_LED();
+  if(!start_VU_LED()) return 1;
 
   sleep_ms(INTER_SCREEN_DELAY);
 
@@ -74,11 +74,7 @@ int main()
 
   sleep_ms(INTER_SCREEN_DELAY);
 
-  if(!start_display_oled()) return 1;
-  
-  sleep_ms(INTER_SCREEN_DELAY);
-
-  if(!start_network_infrastructure()) return 1;
+//  if(!start_ADC_with_DMA()) return 1;
 
   sleep_ms(INTER_SCREEN_DELAY);
 
@@ -86,11 +82,15 @@ int main()
 
   sleep_ms(INTER_SCREEN_DELAY);
 
-  if(!start_ADC_with_DMA()) return 1;
+  if(!start_network_infrastructure()) return 1;
 
   sleep_ms(INTER_SCREEN_DELAY);
 
   if(!start_gpio_and_drone_control()) return 1;
+
+  sleep_ms(INTER_SCREEN_DELAY);
+
+  if(!start_display_oled()) return 1;
 
   sleep_ms(INTER_SCREEN_DELAY);
 
@@ -451,7 +451,7 @@ bool start_ADC_with_DMA(){
  *
  * @see npInit
  */
-void start_VU_LED(){
+bool start_VU_LED(){
   strcpy(text_line_oled[0], "   Ativando    ");
   strcpy(text_line_oled[1], "               ");
   strcpy(text_line_oled[2], "               ");
@@ -471,7 +471,39 @@ void start_VU_LED(){
   render_on_display(ssd, &frame_area);
 
   npInit(MATRIZ_LED_PIN, MATRIZ_LED_COUNT);
+
+  BaseType_t xReturn = xTaskCreate(
+    task_vu_leds,
+    "Task que mantem os VU LEDs atualizados",
+    TASK_VU_LEDS_STACK_SIZE,
+    NULL,
+    TASK_VU_LEDS_PRIORITY,
+    NULL
+  );
+  
+  if (xReturn != pdPASS) {
+    strcpy(text_line_oled[0], "     FALHA     ");
+    strcpy(text_line_oled[1], " AO CRIAR TASK ");
+    strcpy(text_line_oled[2], "      RTOS     ");
+    strcpy(text_line_oled[3], "               ");
+    strcpy(text_line_oled[4], "               ");
+    strcpy(text_line_oled[5], "     VU LEDs   ");
+    strcpy(text_line_oled[6], "               ");
+    strcpy(text_line_oled[7], "               ");
+
+    uint8_t y = 0;
+    for (uint i = 0; i < count_of(text_line_oled); i++)
+    {
+      ssd1306_draw_string(ssd, 5, y, text_line_oled[i]);
+      y += ssd1306_line_height;
+    }
+    render_on_display(ssd, &frame_area);
+
+    return false;
+  }
+  return true;
 }
+
 /**
  * @brief Exibe mensagens de inicializacao e configura os botoes A e B
  *        para serem monitorados por interrupcoes.
