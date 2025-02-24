@@ -7,7 +7,7 @@
 #define I2C_SDA  14
 #define I2C_SCL  15
 
-#define INTER_SCREEN_DELAY (800)
+#define INTER_SCREEN_DELAY (400)
 #define OLED_SCROOL_DELAY (INTER_SCREEN_DELAY / 2.5)
 
 
