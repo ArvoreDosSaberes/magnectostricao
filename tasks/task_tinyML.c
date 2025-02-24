@@ -39,12 +39,14 @@ void task_tinyML(void *pvParameters){
     TickType_t xPreviousWakeTime = xTaskGetTickCount();
     while (1)    
     {
-        //printf("Loop Task TinyML %d\n", xPreviousWakeTime);
+        printf("Inicio Loop Task TinyML %d\n", xPreviousWakeTime);
         
         // implementa código que classifica as amostras captadas pelo microfone
         // esta task está atrelada a task_adc_with_dma, que deverá emitir 
         // um evento ou depositar num queue a leitura feita
         
+        printf("antes da pausa Loop Task TinyML %d\n", xPreviousWakeTime);
         xTaskDelayUntil(&xPreviousWakeTime, TASK_TINYML_DELAY); /* delay 100 ticks */
+        printf("Fim Loop Task TinyML %d\n", xPreviousWakeTime);
     }
 }

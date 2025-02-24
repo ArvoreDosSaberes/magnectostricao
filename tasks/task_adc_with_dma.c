@@ -3,6 +3,7 @@
 #include "semphr.h"
 #include "queue.h"
 
+#include "hardware/vreg.h"
 #include "hardware/adc.h"
 #include "hardware/dma.h"
 
@@ -17,17 +18,21 @@
 #include "tasks_paramiters.h"
 #include "task_adc_with_dma.h"
 
+uint intensity;
 // buffer de texto para o display oled
 extern char text_line_oled[max_text_lines][max_text_columns];
 
 // buffer de amostragem do ADC, microfone que coleta o audio
 // os samples devem ser no comprimento equivalente aos segundos
 // necessários para uma amostragem adequada
-uint16_t adc_buffer[SAMPLES];
-QueueHandle_t adc_Buffer_Semaphore;
+static uint16_t adc_buffer[SAMPLES];
 
 static uint dma_channel;
 static dma_channel_config dma_cfg;
+
+static void sample_mic();
+static float mic_power();
+static uint8_t get_intensity(float v);
 
 void task_adc_with_dma(void *pvParameters)
 {
@@ -37,20 +42,10 @@ void task_adc_with_dma(void *pvParameters)
   // O código abaixo deve ser transportado para a TASK (FreeRTOS) que
   // faz o processamento da amostragem via DMA
 
-  vTaskSuspendAll();
-  adc_gpio_init(MIC_PIN);
   adc_init();
+  adc_gpio_init(MIC_PIN);
   adc_select_input(MIC_CHANNEL);
 
-  adc_fifo_setup(
-      true,  // Habilitar FIFO
-      true,  // Habilitar request de dados do DMA
-      1,     // Threshold para ativar request DMA é 1 leitura do ADC
-      false, // Não usar bit de erro
-      false  // Não fazer downscale das amostras para 8-bits, manter 12-bits.
-  );
-
-  adc_set_clkdiv(ADC_CLOCK_DIV);
   // Tomando posse de canal do DMA.
   dma_channel = dma_claim_unused_channel(true);
 
@@ -63,35 +58,41 @@ void task_adc_with_dma(void *pvParameters)
 
   channel_config_set_dreq(&dma_cfg, DREQ_ADC); // Usamos a requisição de dados do ADC
 
-  adc_Buffer_Semaphore = xSemaphoreCreateBinary();
-  xTaskResumeAll();
+  dma_channel_configure(
+    dma_channel, &dma_cfg,
+    adc_buffer,  // Destino: buffer de amostras
+    &adc_hw->fifo,  // Fonte: FIFO do ADC
+    SAMPLES,  // Número de transferências
+    false  // Não inicia automaticamente
+  );
+
+  adc_fifo_setup(
+      true,  // Habilitar FIFO
+      true,  // Habilitar request de dados do DMA
+      1,     // Threshold para ativar request DMA é 1 leitura do ADC
+      false, // Não usar bit de erro
+      false  // Não fazer downscale das amostras para 8-bits, manter 12-bits.
+  );
+
+  adc_set_clkdiv(ADC_CLOCK_DIV);
 
   TickType_t xLastWakeTime = xTaskGetTickCount();
   while (1)
   {
-    printf("LOOP Task ADC DMA %d\n", xLastWakeTime);
-    // Realiza uma amostragem do microfone. deve ser transportado para a TASK de amostragem ADC
 
-    //if (xSemaphoreTake(adc_Buffer_Semaphore, portMAX_DELAY) == pdTRUE)
-    //{
-      // se o semaforo foi obtido, realiza a leitura do microfone
-      vTaskSuspendAll();
-      sample_mic();
-     // xTaskResumeAll();
-      //xSemaphoreGive(adc_Buffer_Semaphore);
-    //}
-
+    printf("Início Loop Task ADC DMA %d\n", xLastWakeTime);
+    // Realiza uma amostragem do microfone.
+    sample_mic();
+    printf("Passou sample mic\n");
     // realiza a exibição do status da coleta de ruidos
     // Pega a potência média da amostragem do microfone.
     float avg = mic_power();
     avg = 2.f * abs(ADC_ADJUST(avg)); // Ajusta para intervalo de 0 a 3.3V. (apenas magnitude, sem sinal)
-    float db = 20.f * log(ADC_MAX / avg); // Calcula o volume em decibels.
-
-    uint intensity = get_intensity(avg); // Calcula intensidade a ser mostrada na matriz de LEDs.
-
-    //vTaskSuspendAll();
-    // Limpa a matriz de LEDs.
-    npClear();
+    printf("AVG: %f\n", avg);
+    float db = 20.f * log((avg+0.00001/ADC_MAX)); // Calcula o volume em decibels.
+    printf("AVG: %f Volume: %f dB\n", avg, db);
+    intensity = get_intensity(avg); // Calcula intensidade a ser mostrada na matriz de LEDs.
+    printf("Intensidade: %d\n", intensity);
 
     // A depender da intensidade do som, acende LEDs específicos.
     switch (intensity)
@@ -100,80 +101,26 @@ void task_adc_with_dma(void *pvParameters)
       memcpy(text_line_oled[3], "    Sem Som    ", max_text_columns);
       break; // Se o som for muito baixo, não acende nada.
     case 1:
-      memcpy(text_line_oled[3], "    Pouco Som  ", max_text_columns);
-      npSetLED(12, 0, 0, 80); // Acende apenas o centro.
+      memcpy(text_line_oled[3], "   Pouco Som   ", max_text_columns);
       break;
     case 2:
-      memcpy(text_line_oled[3], "  Nivel ideal ", max_text_columns);
-      npSetLED(12, 0, 0, 120); // Acente o centro.
-
-      // Primeiro anel.
-      npSetLED(7, 0, 0, 80);
-      npSetLED(11, 0, 0, 80);
-      npSetLED(13, 0, 0, 80);
-      npSetLED(17, 0, 0, 80);
+      memcpy(text_line_oled[3], "  Nivel ideal  ", max_text_columns);
       break;
     case 3:
-      memcpy(text_line_oled[3], "   Alto Som    ", max_text_columns);
-      // Centro.
-      npSetLED(12, 60, 60, 0);
-
-      // Primeiro anel.
-      npSetLED(7, 0, 0, 120);
-      npSetLED(11, 0, 0, 120);
-      npSetLED(13, 0, 0, 120);
-      npSetLED(17, 0, 0, 120);
-
-      // Segundo anel.
-      npSetLED(2, 0, 0, 80);
-      npSetLED(6, 0, 0, 80);
-      npSetLED(8, 0, 0, 80);
-      npSetLED(10, 0, 0, 80);
-      npSetLED(14, 0, 0, 80);
-      npSetLED(16, 0, 0, 80);
-      npSetLED(18, 0, 0, 80);
-      npSetLED(22, 0, 0, 80);
+      memcpy(text_line_oled[3], "    Alto Som   ", max_text_columns);
       break;
     case 4:
       memcpy(text_line_oled[3], "Muito Alto Som ", max_text_columns);
-      // Centro.
-      npSetLED(12, 80, 0, 0);
-
-      // Primeiro anel.
-      npSetLED(7, 60, 60, 0);
-      npSetLED(11, 60, 60, 0);
-      npSetLED(13, 60, 60, 0);
-      npSetLED(17, 60, 60, 0);
-
-      // Segundo anel.
-      npSetLED(2, 0, 0, 120);
-      npSetLED(6, 0, 0, 120);
-      npSetLED(8, 0, 0, 120);
-      npSetLED(10, 0, 0, 120);
-      npSetLED(14, 0, 0, 120);
-      npSetLED(16, 0, 0, 120);
-      npSetLED(18, 0, 0, 120);
-      npSetLED(22, 0, 0, 120);
-
-      // Terceiro anel.
-      npSetLED(1, 0, 0, 80);
-      npSetLED(3, 0, 0, 80);
-      npSetLED(5, 0, 0, 80);
-      npSetLED(9, 0, 0, 80);
-      npSetLED(15, 0, 0, 80);
-      npSetLED(19, 0, 0, 80);
-      npSetLED(21, 0, 0, 80);
-      npSetLED(23, 0, 0, 80);
       break;
     }
-    // Atualiza a matriz.
-    npWrite();
-    xTaskResumeAll();
-
-    sprintf(text_line_oled[5], "   %02.2f dB     ", db);
+    sprintf(text_line_oled[5], "  %02.2f dB    ", db);
     
+    printf("Antes da pausa Loop Task ADC DMA %d\n", xLastWakeTime);
     xTaskDelayUntil(&xLastWakeTime, TASK_ADC_DMA_DELAY );
-    //printf("FIM LOOP Task ADC DMA %d\n", xLastWakeTime);
+    printf("FIM LOOP Task ADC DMA %d\n", xLastWakeTime);
+
+    UBaseType_t stackLeft = uxTaskGetStackHighWaterMark(NULL);
+    printf("ADC DMA Espaço de pilha livre: %u bytes\n", stackLeft);
   }
 }
 
@@ -183,21 +130,11 @@ void task_adc_with_dma(void *pvParameters)
 void sample_mic()
 {
   adc_fifo_drain(); // Limpa o FIFO do ADC.
-  adc_run(false);   // Desliga o ADC (se estiver ligado) para configurar o DMA.
 
-  dma_channel_configure(dma_channel, &dma_cfg,
-                        adc_buffer,      // Escreve no buffer.
-                        &(adc_hw->fifo), // Lê do ADC.
-                        SAMPLES,         // Faz SAMPLES amostras.
-                        true             // Liga o DMA.
-  );
-
-  // Liga o ADC e espera acabar a leitura.
-  adc_run(true);
-  dma_channel_wait_for_finish_blocking(dma_channel);
-
-  // Acabou a leitura, desliga o ADC de novo.
-  adc_run(false);
+  dma_channel_start(dma_channel);  // Inicia DMA
+  adc_run(true);  // Inicia ADC
+  vTaskDelay(pdMS_TO_TICKS(((SAMPLES * 125)/1000)));  // Aguarda a captura (~8kHz)
+  adc_run(false);  // Para ADC
 }
 
 /**

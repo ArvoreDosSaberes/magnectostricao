@@ -48,7 +48,6 @@ void task_drone_control(void *pvParameters){
     TickType_t xLastWakeTime = xTaskGetTickCount();
     while (1)    
     {
-
         if(modo_local){
 
             adc_select_input(0);
@@ -60,14 +59,17 @@ void task_drone_control(void *pvParameters){
             // X: [            o             ]  Y: [              o         ]
             const uint bar_width = 10;  // aceleração máxima
             const uint adc_max = (1 << 12) - 1; // amostragem máxima do ADC
-            int aceleracao_x = (adc_x_raw * bar_width / adc_max) - (adc_max / 2);
-            int aceleracao_y = (adc_y_raw * bar_width / adc_max) - (adc_max / 2);
-            send_drone_direction(aceleracao_x, aceleracao_y);
+            aceleration_x = (adc_x_raw * bar_width / adc_max) - (adc_max / 2);
+            aceleration_y = (adc_y_raw * bar_width / adc_max) - (adc_max / 2);
+            send_drone_direction(aceleration_x, aceleration_y);
         }else{
             send_drone_direction(aceleration_x, aceleration_y);
         }
 
-        //printf("Loop Task Drone Control %d\n", xLastWakeTime);
+        printf("Inicio Loop Task Drone Control, modo: %d aceleration_x: %d aceleration_y: %d, waketime: %d\n", 
+                                                    modo_local, aceleration_x, aceleration_y, xLastWakeTime);
+
+        printf("Fim Loop Task Drone Control %d\n", xLastWakeTime);
         xTaskDelayUntil(&xLastWakeTime, TASK_DRONE_CONTROL_DELAY); /* delay 100 ticks */
     }
 }

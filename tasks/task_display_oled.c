@@ -60,7 +60,7 @@ void task_display_oled(void *pvParameters)
     while (1)
     {
         // ssd1306_write_array(ssd, &frame_area, &text);
-        printf("Task Display OLED %d\n", xLastWakeTime);
+        printf("inicio loop Task Display OLED %d\n", xLastWakeTime);
         
         vTaskSuspendAll();
         printf(text_line_oled[0]);
@@ -91,7 +91,9 @@ void task_display_oled(void *pvParameters)
         xTaskResumeAll();
         
         xTaskDelayUntil(&xLastWakeTime, TASK_DISPLAY_OLED_DELAY); 
-        
-        //printf("fim loop taskdisplayoled %d\n", xLastWakeTime);
+        printf("fim loop task display oled %d\n", xLastWakeTime);
+
+        UBaseType_t stackLeft = uxTaskGetStackHighWaterMark(NULL);
+        printf("Display OLED Espaço de pilha livre: %u bytes\n", stackLeft);
     }
 }
