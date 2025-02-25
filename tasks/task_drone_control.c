@@ -70,7 +70,10 @@ void task_drone_control(void *pvParameters){
                                                     modo_local, aceleration_x, aceleration_y, xLastWakeTime);
 
         printf("Fim Loop Task Drone Control %d\n", xLastWakeTime);
+        UBaseType_t stackLeft = uxTaskGetStackHighWaterMark(NULL);
+        printf("Drone Control Espaço de pilha livre: %u bytes\n", stackLeft);
         xTaskDelayUntil(&xLastWakeTime, TASK_DRONE_CONTROL_DELAY); /* delay 100 ticks */
+
     }
 }
 

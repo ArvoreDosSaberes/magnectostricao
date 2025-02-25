@@ -19,6 +19,7 @@
 #include "task_adc_with_dma.h"
 
 uint intensity;
+
 // buffer de texto para o display oled
 extern char text_line_oled[max_text_lines][max_text_columns];
 
@@ -99,6 +100,7 @@ void task_adc_with_dma(void *pvParameters)
     {
     case 0:
       memcpy(text_line_oled[3], "    Sem Som    ", max_text_columns);
+      printf("Sem Som\n");
       break; // Se o som for muito baixo, não acende nada.
     case 1:
       memcpy(text_line_oled[3], "   Pouco Som   ", max_text_columns);
@@ -133,6 +135,7 @@ void sample_mic()
 
   dma_channel_start(dma_channel);  // Inicia DMA
   adc_run(true);  // Inicia ADC
+  //dma_channel_wait_for_finish_blocking(dma_channel);
   vTaskDelay(pdMS_TO_TICKS(((SAMPLES * 125)/1000)));  // Aguarda a captura (~8kHz)
   adc_run(false);  // Para ADC
 }
