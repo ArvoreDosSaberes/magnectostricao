@@ -59,6 +59,7 @@ add_executable(${PROJECT_NAME} main.c
         tasks/task_tinyML.c
         tasks/task_http_server.c 
         tasks/task_vu_leds.c
+        tasks/task_fft_filter.c
 )
 
 pico_set_program_name(${PROJECT_NAME} "magnectostriccao")

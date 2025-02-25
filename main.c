@@ -35,6 +35,7 @@
 #include "tasks/task_display_oled.h" // Carrega tarefas do display
 #include "tasks/task_drone_control.h" // Carrega tarefas do controle de drone
 #include "tasks/task_tinyML.h" // Carrega tarefas do TinyML
+#include "tasks/task_fft_filter.h" // Carrega tarefas do filtro FFT
 #include "tasks/task_http_server.h" // Carrega tarefas do http server
 #include "tasks/task_vu_leds.h" // Carrega tarefas do VU LEDS
 #include "main.h" // carrega cabeçalhos do main
@@ -74,11 +75,15 @@ int main()
 
   sleep_ms(INTER_SCREEN_DELAY);
 
-//  if(!start_ADC_with_DMA()) return 1;
+  if(!start_ADC_with_DMA()) return 1;
 
   sleep_ms(INTER_SCREEN_DELAY);
 
   if(!start_tinyML()) return 1;
+
+  sleep_ms(INTER_SCREEN_DELAY);
+
+  if(!start_fft_filter()) return 1;
 
   sleep_ms(INTER_SCREEN_DELAY);
 
@@ -119,7 +124,7 @@ int main()
 bool start_display_oled(){
   BaseType_t xReturn = xTaskCreate(
     task_display_oled,
-    "Task que mantem o display atualizado",
+    "Task OLED",
     TASK_DISPLAY_OLED_STACK_SIZE,
     NULL,
     TASK_DISPLAY_OLED_PRIORITY,
@@ -382,6 +387,62 @@ bool start_tinyML(){
   return true;
  
 }
+
+/**
+ * @brief Exibe mensagens de inicializacao e inicializa a TASKTinyML.
+ */
+bool start_fft_filter(){
+  strcpy(text_line_oled[0], "   Ativando    ");
+  strcpy(text_line_oled[1], "               ");
+  strcpy(text_line_oled[2], "               ");
+  strcpy(text_line_oled[3], "               ");
+  strcpy(text_line_oled[4], "               ");
+  strcpy(text_line_oled[5], "   FFT filter  ");
+  strcpy(text_line_oled[6], "               ");
+  strcpy(text_line_oled[7], "               ");
+
+  // ssd1306_write_array(ssd, &frame_area, &text);
+  uint8_t y = 0;
+  for (uint i = 0; i < count_of(text_line_oled); i++)
+  {
+    ssd1306_draw_string(ssd, 5, y, text_line_oled[i]);
+    y += ssd1306_line_height;
+  }
+  render_on_display(ssd, &frame_area);
+
+  BaseType_t xReturn = xTaskCreate(
+    task_fft_filter, 
+    "FFT Filter task", 
+    TASK_FFT_FILTER_STACK_SIZE,
+    NULL, 
+    TASK_FFT_FILTER_PRIORITY, 
+    NULL);
+
+  if (xReturn != pdPASS) {
+    strcpy(text_line_oled[0], "     FALHA     ");
+    strcpy(text_line_oled[1], " AO CRIAR TASK ");
+    strcpy(text_line_oled[2], "      RTOS     ");
+    strcpy(text_line_oled[3], "               ");
+    strcpy(text_line_oled[4], "               ");
+    strcpy(text_line_oled[5], "   FFT filter  ");
+    strcpy(text_line_oled[6], "               ");
+    strcpy(text_line_oled[7], "               ");
+
+    uint8_t y = 0;
+    for (uint i = 0; i < count_of(text_line_oled); i++)
+    {
+      ssd1306_draw_string(ssd, 5, y, text_line_oled[i]);
+      y += ssd1306_line_height;
+    }
+    render_on_display(ssd, &frame_area);
+
+    sleep_ms(INTER_SCREEN_DELAY * 6);
+    return false;
+  }
+  return true;
+ 
+}
+
 /**
  * @brief Exibe mensagens de inicializacao e inicializa o ADC com DMA.
  *
@@ -474,7 +535,7 @@ bool start_VU_LED(){
 
   BaseType_t xReturn = xTaskCreate(
     task_vu_leds,
-    "Task que mantem os VU LEDs atualizados",
+    "Task de VU LEDs",
     TASK_VU_LEDS_STACK_SIZE,
     NULL,
     TASK_VU_LEDS_PRIORITY,
@@ -605,7 +666,7 @@ bool start_gpio_and_drone_control(){
 
   BaseType_t xReturn = xTaskCreate(
     task_drone_control,
-    "Task Drone Control",
+    "Task Drone Ctrl",
     TASK_DRONE_CONTROL_STACK_SIZE,
     NULL,
     TASK_DRONE_CONTROL_PRIORITY,
