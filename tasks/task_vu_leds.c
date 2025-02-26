@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #include "FreeRTOS.h"
 #include "task.h"
 #include "semphr.h"
@@ -10,7 +12,8 @@
 #include "tasks_paramiters.h"
 #include "task_vu_leds.h"
 
-extern uint intensity;
+
+extern QueueHandle_t xIntensity_Buffer_Queue;
 
 void task_vu_leds(void *pvParameters)
 {
@@ -29,6 +32,11 @@ void task_vu_leds(void *pvParameters)
     // Limpa a matriz de LEDs.
     npClear();
 
+    uint intensity;
+    if(xQueueReceive(xIntensity_Buffer_Queue, &intensity, OLED_INIT_QUEUE_TIMEOUT) != pdPASS) {
+      printf("Nao recebeu intensidade\n");
+      continue;
+    }
     // A depender da intensidade do som, acende LEDs específicos.
     switch (intensity)
     {

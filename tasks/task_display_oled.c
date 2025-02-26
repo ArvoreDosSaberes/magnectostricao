@@ -20,6 +20,8 @@
 
 #include "inc/ssd1306.h"
 
+extern QueueHandle_t xIntensity_Buffer_Queue;
+
 char text_line_oled[max_text_lines][max_text_columns];
 
 // Preparar área de renderização para o display (ssd1306_width pixels por ssd1306_n_pages páginas)

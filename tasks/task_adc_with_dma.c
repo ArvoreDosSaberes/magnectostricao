@@ -18,7 +18,9 @@
 #include "tasks_paramiters.h"
 #include "task_adc_with_dma.h"
 
-uint intensity;
+extern QueueHandle_t xFFT_Buffer_Queue;
+extern QueueHandle_t xTinyML_Buffer_Queue;
+extern QueueHandle_t xIntensity_Buffer_Queue;
 
 // buffer de texto para o display oled
 extern char text_line_oled[max_text_lines][max_text_columns];
@@ -26,7 +28,7 @@ extern char text_line_oled[max_text_lines][max_text_columns];
 // buffer de amostragem do ADC, microfone que coleta o audio
 // os samples devem ser no comprimento equivalente aos segundos
 // necessários para uma amostragem adequada
-static uint16_t adc_buffer[SAMPLES];
+static uint16_t adc_buffer[ADC_SAMPLES];
 
 static uint dma_channel;
 static dma_channel_config dma_cfg;
@@ -63,7 +65,7 @@ void task_adc_with_dma(void *pvParameters)
     dma_channel, &dma_cfg,
     adc_buffer,  // Destino: buffer de amostras
     &adc_hw->fifo,  // Fonte: FIFO do ADC
-    SAMPLES,  // Número de transferências
+    ADC_SAMPLES,  // Número de transferências
     false  // Não inicia automaticamente
   );
 
@@ -85,6 +87,12 @@ void task_adc_with_dma(void *pvParameters)
     // Realiza uma amostragem do microfone.
     sample_mic();
     printf("Passou sample mic\n");
+    
+    if(xQueueSendToBack(xFFT_Buffer_Queue, adc_buffer, ADC_TO_FFT_QUEUE_TIMEOUT) != pdPASS)
+    {
+      printf("ADC: Erro ao enviar buffer de amostragem\n");
+    };
+
     // realiza a exibição do status da coleta de ruidos
     // Pega a potência média da amostragem do microfone.
     float avg = mic_power();
@@ -92,8 +100,13 @@ void task_adc_with_dma(void *pvParameters)
     printf("AVG: %f\n", avg);
     float db = 20.f * log((avg+0.00001/ADC_MAX)); // Calcula o volume em decibels.
     printf("AVG: %f Volume: %f dB\n", avg, db);
-    intensity = get_intensity(avg); // Calcula intensidade a ser mostrada na matriz de LEDs.
+    uint intensity = get_intensity(avg); // Calcula intensidade a ser mostrada na matriz de LEDs.
     printf("Intensidade: %d\n", intensity);
+
+    if(xQueueSendToBack(xIntensity_Buffer_Queue, &intensity, ADC_INTENSITY_QUEUE_TIMEOUT) != pdPASS)
+    {
+      printf("ADC: Erro ao enviar buffer de intensidade\n");
+    };
 
     // A depender da intensidade do som, acende LEDs específicos.
     switch (intensity)
@@ -136,7 +149,7 @@ void sample_mic()
   dma_channel_start(dma_channel);  // Inicia DMA
   adc_run(true);  // Inicia ADC
   //dma_channel_wait_for_finish_blocking(dma_channel);
-  vTaskDelay(pdMS_TO_TICKS(((SAMPLES * 125)/1000)));  // Aguarda a captura (~8kHz)
+  vTaskDelay(pdMS_TO_TICKS(((ADC_SAMPLES * 125)/1000)));  // Aguarda a captura (~8kHz)
   adc_run(false);  // Para ADC
 }
 
@@ -147,10 +160,10 @@ float mic_power()
 {
   float avg = 0.f;
 
-  for (uint i = 0; i < SAMPLES; ++i)
+  for (uint i = 0; i < ADC_SAMPLES; ++i)
     avg += adc_buffer[i] * adc_buffer[i];
 
-  avg /= SAMPLES;
+  avg /= ADC_SAMPLES;
   return sqrt(avg);
 }
 

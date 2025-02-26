@@ -57,6 +57,10 @@ bool modo_local = false;
 int aceleration_x;
 int aceleration_y;
 
+QueueHandle_t xFFT_Buffer_Queue = NULL;
+QueueHandle_t xTinyML_Buffer_Queue = NULL;
+QueueHandle_t xIntensity_Buffer_Queue = NULL;
+
 int main()
 {
   stdio_init_all(); // Inicializa os tipos stdio padrão presentes ligados ao binário
@@ -410,6 +414,8 @@ bool start_fft_filter(){
   }
   render_on_display(ssd, &frame_area);
 
+  xTinyML_Buffer_Queue = xQueueCreate( TINYML_QUEUE_LENGTH, ( UBaseType_t ) ADC_SAMPLES * sizeof( uint16_t ) );
+
   BaseType_t xReturn = xTaskCreate(
     task_fft_filter, 
     "FFT Filter task", 
@@ -471,6 +477,8 @@ bool start_ADC_with_DMA(){
   }
   render_on_display(ssd, &frame_area);
    
+  xFFT_Buffer_Queue = xQueueCreate( ADC_QUEUE_LENGTH, ( UBaseType_t ) ADC_SAMPLES * sizeof( uint16_t ) );
+  xIntensity_Buffer_Queue = xQueueCreate( ADC_INTENSITY_QUEUE_LENGTH, ( UBaseType_t ) sizeof( uint ) );
   BaseType_t xReturn = xTaskCreate(
     task_adc_with_dma, 
     "Task ADC com DMA", 
